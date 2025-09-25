@@ -5,9 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 
-
-@Getter
-@AllArgsConstructor
 public enum StatusOS {
 
     EM_ORCAMENTO("Em Orçamento"),
@@ -23,4 +20,11 @@ public enum StatusOS {
 
     private final String descricao;
 
+    StatusOS(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
 }

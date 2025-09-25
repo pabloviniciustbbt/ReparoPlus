@@ -1,10 +1,5 @@
 package com.pabloleal.ReparoPlus.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-@Getter
-@AllArgsConstructor
 public enum UF {
 
     AC("Acre"),
@@ -36,4 +31,12 @@ public enum UF {
     TO("Tocantins");
 
     private final String nome;
+
+    UF(String nome) {
+        this.nome = nome;
+    }
+
+    public String getNome() {
+        return nome;
+    }
 }

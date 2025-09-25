@@ -12,8 +12,6 @@ import java.time.ZoneOffset;
 
 @Entity
 @Table(name = "ordens_servico")
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrdemServico {
@@ -46,5 +44,75 @@ public class OrdemServico {
 
     private OffsetDateTime dataHoraAbertura = OffsetDateTime.now(ZoneOffset.UTC);
 
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public Equipamento getEquipamento() {
+        return equipamento;
+    }
+
+    public void setEquipamento(Equipamento equipamento) {
+        this.equipamento = equipamento;
+    }
+
+    public Atendente getAtendente() {
+        return atendente;
+    }
+
+    public void setAtendente(Atendente atendente) {
+        this.atendente = atendente;
+    }
+
+    public Tecnico getTecnico() {
+        return tecnico;
+    }
+
+    public void setTecnico(Tecnico tecnico) {
+        this.tecnico = tecnico;
+    }
+
+    public StatusOS getStatusOS() {
+        return statusOS;
+    }
+
+    public void setStatusOS(StatusOS statusOS) {
+        this.statusOS = statusOS;
+    }
+
+    public String getObservacoesTecnicas() {
+        return observacoesTecnicas;
+    }
+
+    public void setObservacoesTecnicas(String observacoesTecnicas) {
+        this.observacoesTecnicas = observacoesTecnicas;
+    }
+
+    public String getObservacoesOrdemServico() {
+        return observacoesOrdemServico;
+    }
+
+    public void setObservacoesOrdemServico(String observacoesOrdemServico) {
+        this.observacoesOrdemServico = observacoesOrdemServico;
+    }
+
+    public OffsetDateTime getDataHoraAbertura() {
+        return dataHoraAbertura;
+    }
+
+    public void setDataHoraAbertura(OffsetDateTime dataHoraAbertura) {
+        this.dataHoraAbertura = dataHoraAbertura;
+    }
 }

@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Embeddable
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Equipamento {
@@ -44,4 +42,60 @@ public class Equipamento {
     @NotBlank
     @Column(nullable = false)
     private String estadoFisico;
+
+    public String getTipoEquipamento() {
+        return tipoEquipamento;
+    }
+
+    public void setTipoEquipamento(String tipoEquipamento) {
+        this.tipoEquipamento = tipoEquipamento;
+    }
+
+    public String getMarca() {
+        return marca;
+    }
+
+    public void setMarca(String marca) {
+        this.marca = marca;
+    }
+
+    public String getModelo() {
+        return modelo;
+    }
+
+    public void setModelo(String modelo) {
+        this.modelo = modelo;
+    }
+
+    public String getNumeroSerie() {
+        return numeroSerie;
+    }
+
+    public void setNumeroSerie(String numeroSerie) {
+        this.numeroSerie = numeroSerie;
+    }
+
+    public String getAcessorios() {
+        return acessorios;
+    }
+
+    public void setAcessorios(String acessorios) {
+        this.acessorios = acessorios;
+    }
+
+    public String getDefeitoRelatado() {
+        return defeitoRelatado;
+    }
+
+    public void setDefeitoRelatado(String defeitoRelatado) {
+        this.defeitoRelatado = defeitoRelatado;
+    }
+
+    public String getEstadoFisico() {
+        return estadoFisico;
+    }
+
+    public void setEstadoFisico(String estadoFisico) {
+        this.estadoFisico = estadoFisico;
+    }
 }

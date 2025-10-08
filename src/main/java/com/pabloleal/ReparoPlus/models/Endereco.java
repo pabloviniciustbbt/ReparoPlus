@@ -1,5 +1,6 @@
 package com.pabloleal.ReparoPlus.models;
 
+import com.pabloleal.ReparoPlus.dto.EnderecoUpdateDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -40,6 +41,30 @@ public class Endereco {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 2)
     private UF uf;
+
+    public void atualizarEndereco(EnderecoUpdateDTO dados){
+        if (dados.logradouro() != null){
+            this.setLogradouro(dados.logradouro());
+        }
+        if (dados.numero() != null){
+            this.setNumero(dados.numero());
+        }
+        if (dados.complemento() != null){
+            this.setComplemento(dados.complemento());
+        }
+        if (dados.bairro() != null){
+            this.setBairro(dados.bairro());
+        }
+        if (dados.cidade() != null){
+            this.setCidade(dados.cidade());
+        }
+        if (dados.cep() != null){
+            this.setCep(dados.cep());
+        }
+        if (dados.uf()!= null){
+            this.setUf(dados.uf());
+        }
+    }
 
     public String getLogradouro() {
         return logradouro;

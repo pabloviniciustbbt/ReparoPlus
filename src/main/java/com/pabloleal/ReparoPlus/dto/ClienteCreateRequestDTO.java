@@ -1,12 +1,13 @@
 package com.pabloleal.ReparoPlus.dto;
 
+import com.pabloleal.ReparoPlus.models.Cliente;
 import com.pabloleal.ReparoPlus.models.Endereco;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record ClienteRequestDTO(
+public record ClienteCreateRequestDTO(
 
         @NotBlank
         String cpf,
@@ -21,4 +22,7 @@ public record ClienteRequestDTO(
         Endereco endereco
 
 ) {
+        public ClienteCreateRequestDTO(Cliente cliente){
+                this(cliente.getCpf(), cliente.getNome(), cliente.getEmail(), cliente.getTelefone(), cliente.getEndereco());
+        }
 }

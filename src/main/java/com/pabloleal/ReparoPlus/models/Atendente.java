@@ -1,13 +1,8 @@
 package com.pabloleal.ReparoPlus.models;
 
+import com.pabloleal.ReparoPlus.dto.AtendenteCreateRequestDTO;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.validator.constraints.br.CPF;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -20,9 +15,8 @@ public class Atendente extends Pessoa {
     @OneToMany(mappedBy = "atendente", fetch = FetchType.LAZY)
     private Set<OrdemServico> ordensServico = new HashSet<>();
 
-    public Atendente(String cpf, String nome, String email, String telefone, Set<OrdemServico> ordensServico) {
-        super(cpf, nome, email, telefone);
-        this.ordensServico = ordensServico;
+    public Atendente(AtendenteCreateRequestDTO atendenteDTO) {
+        super(atendenteDTO.cpf(), atendenteDTO.nome(), atendenteDTO.email(), atendenteDTO.telefone());
     }
 
     public Set<OrdemServico> getOrdensServico() {

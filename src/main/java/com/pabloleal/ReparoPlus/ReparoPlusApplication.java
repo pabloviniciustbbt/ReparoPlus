@@ -1,13 +1,13 @@
-package com.pabloleal.Controlai;
+package com.pabloleal.ReparoPlus;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ControlaiApplication {
+public class ReparoPlusApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ControlaiApplication.class, args);
+		SpringApplication.run(ReparoPlusApplication.class, args);
 	}
 
 }

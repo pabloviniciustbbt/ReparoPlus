@@ -1,7 +1,7 @@
 package com.pabloleal.ReparoPlus.dto;
 
+import com.pabloleal.ReparoPlus.models.Pessoa;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record PessoaUpdateRequestDTO(
@@ -14,4 +14,14 @@ public record PessoaUpdateRequestDTO(
         String telefone
 
         ) {
+        public PessoaUpdateRequestDTO(Pessoa pessoa) {
+                this(
+                        pessoa.getId(),
+                        pessoa.getCpf(),
+                        pessoa.getNome(),
+                        pessoa.getEmail(),
+                        pessoa.getTelefone()
+                );
+        }
+
 }

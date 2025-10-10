@@ -2,10 +2,8 @@ package com.pabloleal.ReparoPlus.models;
 
 import com.pabloleal.ReparoPlus.dto.ClienteCreateRequestDTO;
 import com.pabloleal.ReparoPlus.dto.ClienteUpdateRequestDTO;
-import com.pabloleal.ReparoPlus.dto.EnderecoUpdateDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,20 +26,20 @@ public class Cliente extends Pessoa{
         this.endereco = clienteDTO.endereco();
     }
 
-    public void atualizarCliente(ClienteUpdateRequestDTO dados) {
+    public void atualizarCliente(ClienteUpdateRequestDTO clienteDTO) {
 
-        if (dados.nome() != null){
-            this.setNome(dados.nome());
+        if (clienteDTO.nome() != null){
+            this.setNome(clienteDTO.nome());
         }
-        if (dados.email() != null){
-            this.setEmail(dados.email());
+        if (clienteDTO.email() != null){
+            this.setEmail(clienteDTO.email());
         }
 
-        if (dados.telefone() != null){
-            this.setTelefone(dados.telefone());
+        if (clienteDTO.telefone() != null){
+            this.setTelefone(clienteDTO.telefone());
         }
-        if (dados.endereco() != null){
-            this.endereco.atualizarEndereco(dados.endereco());
+        if (clienteDTO.endereco() != null){
+            this.endereco.atualizarEndereco(clienteDTO.endereco());
         }
     }
 

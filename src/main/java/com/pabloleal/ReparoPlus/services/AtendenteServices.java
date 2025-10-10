@@ -22,7 +22,7 @@ public class AtendenteServices {
     public PessoaUpdateRequestDTO atualizarAtendente(PessoaUpdateRequestDTO dados) {
         Atendente atendente = atendenteRepository.getReferenceById(dados.id());
         atendente.atualizarPessoa(dados);
-        return dados;
+        return new PessoaUpdateRequestDTO(atendente);
     }
 
     public void deletarAtendente(Long id) {

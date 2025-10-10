@@ -1,6 +1,6 @@
 package com.pabloleal.ReparoPlus.models;
 
-import com.pabloleal.ReparoPlus.dto.AtendenteCreateRequestDTO;
+import com.pabloleal.ReparoPlus.dto.PessoaCreateRequestDTO;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
@@ -9,14 +9,16 @@ import java.util.Set;
 
 @Entity
 @Table(name = "atendentes")
-@NoArgsConstructor
 public class Atendente extends Pessoa {
 
     @OneToMany(mappedBy = "atendente", fetch = FetchType.LAZY)
     private Set<OrdemServico> ordensServico = new HashSet<>();
 
-    public Atendente(AtendenteCreateRequestDTO atendenteDTO) {
-        super(atendenteDTO.cpf(), atendenteDTO.nome(), atendenteDTO.email(), atendenteDTO.telefone());
+    public Atendente() {
+    }
+
+    public Atendente(PessoaCreateRequestDTO pessoaDTO){
+        super(pessoaDTO);
     }
 
     public Set<OrdemServico> getOrdensServico() {

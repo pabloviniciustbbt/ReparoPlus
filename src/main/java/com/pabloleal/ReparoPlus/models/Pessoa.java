@@ -1,12 +1,11 @@
 package com.pabloleal.ReparoPlus.models;
 
+import com.pabloleal.ReparoPlus.dto.PessoaCreateRequestDTO;
+import com.pabloleal.ReparoPlus.dto.PessoaUpdateRequestDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.validator.constraints.br.CPF;
 
 @MappedSuperclass
@@ -44,6 +43,30 @@ public abstract class Pessoa {
         this.telefone = telefone;
         this.ativo = true;
     }
+
+    public Pessoa(PessoaCreateRequestDTO pessoaDTO) {
+        this.cpf = pessoaDTO.cpf();
+        this.nome = pessoaDTO.nome();
+        this.email = pessoaDTO.email();
+        this.telefone = pessoaDTO.telefone();
+        this.ativo = true;
+    }
+
+    public void atualizarPessoa(PessoaUpdateRequestDTO pessoaDTO) {
+        if (pessoaDTO.cpf() != null){
+            this.cpf = pessoaDTO.cpf();
+        }
+        if (pessoaDTO.nome() != null){
+            this.nome = pessoaDTO.nome();
+        }
+        if (pessoaDTO.email() != null){
+            this.email = pessoaDTO.email();
+        }
+        if (pessoaDTO.telefone() != null){
+            this.telefone = pessoaDTO.telefone();
+        }
+    }
+
     public void deletarPessoa(){
         this.ativo = false;
     }

@@ -1,6 +1,7 @@
 package com.pabloleal.ReparoPlus.controller;
 
 import com.pabloleal.ReparoPlus.dto.ClienteCreateRequestDTO;
+import com.pabloleal.ReparoPlus.dto.ClienteResponseDTO;
 import com.pabloleal.ReparoPlus.dto.ClienteUpdateRequestDTO;
 import com.pabloleal.ReparoPlus.services.ClienteServices;
 import jakarta.transaction.Transactional;
@@ -37,7 +38,25 @@ public class ClienteController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/id/{id}")
+    public ResponseEntity<ClienteResponseDTO> buscarClienteID(@PathVariable Long id){
+        ClienteResponseDTO clienteDTO = clienteServices.buscarClienteID(id);
 
+        if (clienteDTO != null){
+            return ResponseEntity.ok(clienteDTO);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
+    }
 
+    @GetMapping("/cpf/{cpf}")
+    public ResponseEntity<ClienteResponseDTO> buscarClienteCPF(@PathVariable String cpf){
+        ClienteResponseDTO clienteDTO = clienteServices.buscarClienteCPF(cpf);
 
+        if (clienteDTO != null){
+            return ResponseEntity.ok(clienteDTO);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
+    }
 }

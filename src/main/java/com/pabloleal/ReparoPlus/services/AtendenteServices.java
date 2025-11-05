@@ -1,11 +1,13 @@
 package com.pabloleal.ReparoPlus.services;
 
 import com.pabloleal.ReparoPlus.dto.PessoaCreateRequestDTO;
+import com.pabloleal.ReparoPlus.dto.PessoaResponseDTO;
 import com.pabloleal.ReparoPlus.dto.PessoaUpdateRequestDTO;
 import com.pabloleal.ReparoPlus.models.Atendente;
 import com.pabloleal.ReparoPlus.repositories.AtendenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
 
 @Service
 public class AtendenteServices {
@@ -29,4 +31,27 @@ public class AtendenteServices {
         Atendente atendente = atendenteRepository.getReferenceById(id);
         atendente.deletarPessoa();
     }
+
+    public PessoaResponseDTO buscarAtendenteID(Long id) {
+        Optional<Atendente> atendente = atendenteRepository.findById(id);
+
+        if (atendente.isPresent()){
+            Atendente a = atendente.get();
+            return new PessoaResponseDTO(a.getId(), a.getCpf(), a.getNome(), a.getEmail(), a.getTelefone());
+        }
+
+        return null;
+    }
+
+    public PessoaResponseDTO buscarAtendenteCPF(String cpf) {
+        Optional<Atendente> atendente = atendenteRepository.findByCpf(cpf);
+
+        if (atendente.isPresent()){
+            Atendente a = atendente.get();
+            return new PessoaResponseDTO(a.getId(), a.getCpf(), a.getNome(), a.getEmail(), a.getTelefone());
+        }
+
+        return null;
+    }
+
 }

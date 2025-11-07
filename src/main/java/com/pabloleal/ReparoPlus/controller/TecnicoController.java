@@ -1,6 +1,7 @@
 package com.pabloleal.ReparoPlus.controller;
 
 import com.pabloleal.ReparoPlus.dto.PessoaCreateRequestDTO;
+import com.pabloleal.ReparoPlus.dto.PessoaResponseDTO;
 import com.pabloleal.ReparoPlus.dto.PessoaUpdateRequestDTO;
 import com.pabloleal.ReparoPlus.services.TecnicoServices;
 import jakarta.transaction.Transactional;
@@ -35,6 +36,28 @@ public class TecnicoController {
     public ResponseEntity deletarTecnico(@PathVariable Long id){
         tecnicoServices.deletarTecnico(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/id/{id}")
+    public ResponseEntity<PessoaResponseDTO> buscarTecnicoID(@PathVariable Long id){
+        PessoaResponseDTO tecnicoDTO = tecnicoServices.buscarTecnicoID(id);
+
+        if (tecnicoDTO != null){
+            return ResponseEntity.ok(tecnicoDTO);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
+    }
+
+    @GetMapping("/cpf/{cpf}")
+    public ResponseEntity<PessoaResponseDTO> buscarTecnicoCPF(@PathVariable String cpf){
+        PessoaResponseDTO tecnicoDTO = tecnicoServices.buscarTecnicoCPF(cpf);
+
+        if (tecnicoDTO != null){
+            return ResponseEntity.ok(tecnicoDTO);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
     }
 
 }

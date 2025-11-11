@@ -12,8 +12,6 @@ import java.time.ZoneOffset;
 
 @Entity
 @Table(name = "ordens_servico")
-@AllArgsConstructor
-@NoArgsConstructor
 public class OrdemServico {
 
     @Id
@@ -43,6 +41,20 @@ public class OrdemServico {
     private String observacoesOrdemServico;
 
     private OffsetDateTime dataHoraAbertura = OffsetDateTime.now(ZoneOffset.UTC);
+    private boolean ativo = true;
+
+    public OrdemServico() {
+    }
+
+    public OrdemServico(Cliente cliente, Equipamento equipamento, Atendente atendente, Tecnico tecnico, StatusOS statusOS, String observacoesTecnicas, String observacoesOrdemServico) {
+        this.cliente = cliente;
+        this.equipamento = equipamento;
+        this.atendente = atendente;
+        this.tecnico = tecnico;
+        this.statusOS = statusOS;
+        this.observacoesTecnicas = observacoesTecnicas;
+        this.observacoesOrdemServico = observacoesOrdemServico;
+    }
 
     public Long getId() {
         return id;
@@ -114,5 +126,12 @@ public class OrdemServico {
 
     public void setDataHoraAbertura(OffsetDateTime dataHoraAbertura) {
         this.dataHoraAbertura = dataHoraAbertura;
+    }
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
     }
 }

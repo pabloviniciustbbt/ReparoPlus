@@ -7,18 +7,23 @@ import jakarta.validation.constraints.NotNull;
 
 public record OrdemServicoRequestDTO(
 
-        @NotNull
+        @NotBlank(message = "CPF do Cliente é obrigatório")
         String cpfCliente,
-        @NotNull
+        @NotNull(message = "Cadastro do Equipamento é obrigatório")
         @Valid
         Equipamento equipamento,
-        @NotNull
+        @NotNull(message = "ID do Atendente é obrigatório")
         Long atendenteId,
-        @NotNull
+        @NotNull(message = "ID do Técnico é obrigatório")
         Long tecnicoId,
         StatusOS statusOS,
         String observacoesTecnicas,
         String observacoesOrdemServico
 
 ) {
+        public OrdemServicoRequestDTO {
+                if (statusOS == null){
+                        statusOS = StatusOS.EM_ORCAMENTO;
+                }
+        }
 }

@@ -1,7 +1,7 @@
 package com.pabloleal.ReparoPlus.controller;
 
 import com.pabloleal.ReparoPlus.dto.OrdemServicoRequestDTO;
-import com.pabloleal.ReparoPlus.exceptions.OrdemServicoException;
+import com.pabloleal.ReparoPlus.dto.OrdemServicoResponseDTO;
 import com.pabloleal.ReparoPlus.services.OrdemServicoServices;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -22,5 +22,17 @@ public class OrdemServicoController {
 
         ordemServicoServices.cadastrarOrdemServico(dados);
         return ResponseEntity.ok(dados);
+    }
+
+    @GetMapping("/id/{id}")
+    public ResponseEntity<OrdemServicoResponseDTO> buscarOrdemServicoID(@PathVariable Long id){
+
+        OrdemServicoResponseDTO ordemServicoDTO = ordemServicoServices.buscarOrdemServicoID(id);
+
+        if (ordemServicoDTO != null){
+            return ResponseEntity.ok(ordemServicoDTO);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
     }
 }

@@ -1,7 +1,9 @@
 package com.pabloleal.ReparoPlus.services;
 
+import com.pabloleal.ReparoPlus.dto.ClienteResponseDTO;
 import com.pabloleal.ReparoPlus.dto.OrdemServicoRequestDTO;
 import com.pabloleal.ReparoPlus.dto.OrdemServicoResponseDTO;
+import com.pabloleal.ReparoPlus.dto.PessoaResumoResponseDTO;
 import com.pabloleal.ReparoPlus.exceptions.OrdemServicoException;
 import com.pabloleal.ReparoPlus.models.Atendente;
 import com.pabloleal.ReparoPlus.models.Cliente;
@@ -13,6 +15,7 @@ import com.pabloleal.ReparoPlus.repositories.OrdemServicoRepository;
 import com.pabloleal.ReparoPlus.repositories.TecnicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
 
 @Service
 public class OrdemServicoServices {
@@ -56,13 +59,64 @@ public class OrdemServicoServices {
 
             return new OrdemServicoResponseDTO(
                     ordemServico.getId(),
-                    ordemServico.getCliente(),
+                    new ClienteResponseDTO(
+                            ordemServico.getCliente().getId(),
+                            ordemServico.getCliente().getCpf(),
+                            ordemServico.getCliente().getNome(),
+                            ordemServico.getCliente().getEmail(),
+                            ordemServico.getCliente().getTelefone(),
+                            ordemServico.getCliente().getEndereco()
+                    ),
                     ordemServico.getEquipamento(),
-                    ordemServico.getAtendente(),
-                    ordemServico.getTecnico(),
+                    //Atendente
+                    new PessoaResumoResponseDTO(
+                            ordemServico.getAtendente().getId(),
+                            ordemServico.getAtendente().getNome()
+                    ),
+                    //Tecnico
+                    new PessoaResumoResponseDTO(
+                            ordemServico.getTecnico().getId(),
+                            ordemServico.getTecnico().getNome()
+                    ),
                     ordemServico.getStatusOS(),
                     ordemServico.getObservacoesTecnicas(),
                     ordemServico.getObservacoesOrdemServico(),
                     ordemServico.getDataHoraAbertura());
+    }
+
+    public OrdemServicoResponseDTO buscarOrdemServicoID(Long id) {
+
+        Optional<OrdemServico> ordemServicoDTO = ordemServicoRepository.findById(id);
+
+        if (ordemServicoDTO.isPresent()){
+            OrdemServico os = ordemServicoDTO.get();
+            return new OrdemServicoResponseDTO(
+                    os.getId(),
+                    new ClienteResponseDTO(
+                            os.getCliente().getId(),
+                            os.getCliente().getCpf(),
+                            os.getCliente().getNome(),
+                            os.getCliente().getEmail(),
+                            os.getCliente().getTelefone(),
+                            os.getCliente().getEndereco()
+                            ),
+                    os.getEquipamento(),
+                    //Atendente
+                    new PessoaResumoResponseDTO(
+                            os.getAtendente().getId(),
+                            os.getAtendente().getNome()
+                    ),
+                    //Tecnico
+                    new PessoaResumoResponseDTO(
+                            os.getTecnico().getId(),
+                            os.getTecnico().getNome()
+                    ),
+                    os.getStatusOS(),
+                    os.getObservacoesTecnicas(),
+                    os.getObservacoesOrdemServico(),
+                    os.getDataHoraAbertura());
+        }
+
+        return null;
     }
 }

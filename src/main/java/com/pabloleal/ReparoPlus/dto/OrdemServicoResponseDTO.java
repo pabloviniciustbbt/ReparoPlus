@@ -7,10 +7,10 @@ import java.time.OffsetDateTime;
 public record OrdemServicoResponseDTO(
 
         Long id,
-        Cliente cliente,
+        ClienteResponseDTO cliente,
         Equipamento equipamento,
-        Atendente atendente,
-        Tecnico tecnico,
+        PessoaResumoResponseDTO atendente,
+        PessoaResumoResponseDTO tecnico,
         StatusOS statusOS,
         String observacoesTecnicas,
         String observacoesOrdemServico,

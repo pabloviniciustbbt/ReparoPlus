@@ -1,14 +1,8 @@
 package com.pabloleal.ReparoPlus.services;
 
-import com.pabloleal.ReparoPlus.dto.ClienteResponseDTO;
-import com.pabloleal.ReparoPlus.dto.OrdemServicoRequestDTO;
-import com.pabloleal.ReparoPlus.dto.OrdemServicoResponseDTO;
-import com.pabloleal.ReparoPlus.dto.PessoaResumoResponseDTO;
+import com.pabloleal.ReparoPlus.dto.*;
 import com.pabloleal.ReparoPlus.exceptions.OrdemServicoException;
-import com.pabloleal.ReparoPlus.models.Atendente;
-import com.pabloleal.ReparoPlus.models.Cliente;
-import com.pabloleal.ReparoPlus.models.OrdemServico;
-import com.pabloleal.ReparoPlus.models.Tecnico;
+import com.pabloleal.ReparoPlus.models.*;
 import com.pabloleal.ReparoPlus.repositories.AtendenteRepository;
 import com.pabloleal.ReparoPlus.repositories.ClienteRepository;
 import com.pabloleal.ReparoPlus.repositories.OrdemServicoRepository;
@@ -84,6 +78,41 @@ public class OrdemServicoServices {
                     ordemServico.getDataHoraAbertura());
     }
 
+    public void atualizarOrdemServico(OrdemServicoUpdateRequestDTO dados) {
+
+        OrdemServico ordemServico = ordemServicoRepository.findById(dados.id()).
+                orElseThrow(() -> new OrdemServicoException("Ordem de Serviço não encontrada"));
+
+        if (dados.cpfCliente() != null){
+            Cliente cliente = clienteRepository.findByCpf(dados.cpfCliente()).
+                    orElseThrow(() -> new OrdemServicoException("Cliente com CPF " + dados.cpfCliente() + " não encontrado"));
+            if (!cliente.getAtivo()){
+                throw new OrdemServicoException("Cliente com CPF " + dados.cpfCliente() + " está inativo");
+            }
+            ordemServico.setCliente(cliente);
+        }
+        if (dados.atendenteId() != null) {
+            Atendente atendente = atendenteRepository.findById(dados.atendenteId()).
+                    orElseThrow(() -> new OrdemServicoException("Atendente com ID " + dados.atendenteId() + " não encontrado"));
+            if (!atendente.getAtivo()){
+                throw new OrdemServicoException("Atendente com ID " + dados.atendenteId() + " está inativo");
+            }
+            ordemServico.setAtendente(atendente);
+        }
+        if (dados.tecnicoId() != null) {
+            Tecnico tecnico = tecnicoRepository.findById(dados.tecnicoId()).
+                    orElseThrow(() -> new OrdemServicoException("Tecnico com ID " + dados.tecnicoId() + " não encontrado"));
+            if (!tecnico.getAtivo()){
+                throw new OrdemServicoException("Tecnico com ID " + dados.tecnicoId() + " está inativo");
+            }
+            ordemServico.setTecnico(tecnico);
+        }
+
+        ordemServico.atualizarOrdemServico(dados);
+
+        ordemServicoRepository.save(ordemServico);
+    }
+
     public OrdemServicoResponseDTO buscarOrdemServicoID(Long id) {
 
         Optional<OrdemServico> ordemServicoDTO = ordemServicoRepository.findById(id);
@@ -119,4 +148,6 @@ public class OrdemServicoServices {
 
         return null;
     }
+
+
 }

@@ -1,5 +1,6 @@
 package com.pabloleal.ReparoPlus.models;
 
+import com.pabloleal.ReparoPlus.dto.OrdemServicoUpdateRequestDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -54,6 +55,47 @@ public class OrdemServico {
         this.statusOS = statusOS;
         this.observacoesTecnicas = observacoesTecnicas;
         this.observacoesOrdemServico = observacoesOrdemServico;
+    }
+
+    public void atualizarOrdemServico(OrdemServicoUpdateRequestDTO dados) {
+
+        if (dados.equipamento() != null){
+            atualizarEquipamento(dados.equipamento());
+        }
+        if (dados.statusOS() != null){
+            this.statusOS = dados.statusOS();
+        }
+        if (dados.observacoesTecnicas() != null){
+            this.observacoesTecnicas = dados.observacoesTecnicas();
+        }
+        if (dados.observacoesOrdemServico() != null){
+            this.observacoesOrdemServico = dados.observacoesOrdemServico();
+        }
+    }
+
+    private void atualizarEquipamento(Equipamento equipamento){
+
+        if (equipamento.getTipoEquipamento() != null){
+            this.equipamento.setTipoEquipamento(equipamento.getTipoEquipamento());
+        }
+        if (equipamento.getMarca() != null){
+            this.equipamento.setMarca(equipamento.getMarca());
+        }
+        if (equipamento.getModelo() != null){
+            this.equipamento.setModelo(equipamento.getModelo());
+        }
+        if (equipamento.getNumeroSerie() != null){
+            this.equipamento.setNumeroSerie(equipamento.getNumeroSerie());
+        }
+        if (equipamento.getAcessorios() != null){
+            this.equipamento.setAcessorios(equipamento.getAcessorios());
+        }
+        if (equipamento.getDefeitoRelatado() != null){
+            this.equipamento.setDefeitoRelatado(equipamento.getDefeitoRelatado());
+        }
+        if (equipamento.getEstadoFisico() != null){
+            this.equipamento.setEstadoFisico(equipamento.getEstadoFisico());
+        }
     }
 
     public Long getId() {
@@ -134,4 +176,6 @@ public class OrdemServico {
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
     }
+
+
 }

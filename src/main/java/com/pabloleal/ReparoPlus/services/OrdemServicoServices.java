@@ -8,8 +8,11 @@ import com.pabloleal.ReparoPlus.repositories.ClienteRepository;
 import com.pabloleal.ReparoPlus.repositories.OrdemServicoRepository;
 import com.pabloleal.ReparoPlus.repositories.TecnicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
+
 
 @Service
 public class OrdemServicoServices {
@@ -149,5 +152,8 @@ public class OrdemServicoServices {
         return null;
     }
 
-
+    public Page<DadosListagemOrdemServicoDTO> listarTodasOrdensServico(Pageable pageable) {
+        return ordemServicoRepository.findAll(pageable)
+                .map(DadosListagemOrdemServicoDTO::new);
+    }
 }

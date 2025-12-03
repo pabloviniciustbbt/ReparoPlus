@@ -1,5 +1,6 @@
 package com.pabloleal.ReparoPlus.controller;
 
+import com.pabloleal.ReparoPlus.dto.DadosListagemOrdemServicoDTO;
 import com.pabloleal.ReparoPlus.dto.OrdemServicoRequestDTO;
 import com.pabloleal.ReparoPlus.dto.OrdemServicoResponseDTO;
 import com.pabloleal.ReparoPlus.dto.OrdemServicoUpdateRequestDTO;
@@ -7,6 +8,8 @@ import com.pabloleal.ReparoPlus.services.OrdemServicoServices;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,5 +46,11 @@ public class OrdemServicoController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<DadosListagemOrdemServicoDTO>> listarTodasOrdensServico(Pageable pageable){
+        Page<DadosListagemOrdemServicoDTO> page = ordemServicoServices.listarTodasOrdensServico(pageable);
+        return ResponseEntity.ok(page);
     }
 }

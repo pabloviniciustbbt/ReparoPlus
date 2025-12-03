@@ -1,5 +1,6 @@
 package com.pabloleal.ReparoPlus.dto;
 
+import com.pabloleal.ReparoPlus.models.Cliente;
 import com.pabloleal.ReparoPlus.models.Endereco;
 
 public record ClienteResponseDTO(
@@ -20,4 +21,16 @@ public record ClienteResponseDTO(
         this.telefone = telefone;
         this.endereco = endereco;
     }
+
+    public ClienteResponseDTO(Cliente cliente){
+        this(
+                cliente.getId(),
+                cliente.getCpf(),
+                cliente.getNome(),
+                cliente.getEmail(),
+                cliente.getTelefone(),
+                cliente.getEndereco()
+        );
+    }
+
 }

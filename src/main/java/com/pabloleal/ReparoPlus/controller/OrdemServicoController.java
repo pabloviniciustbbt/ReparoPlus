@@ -53,4 +53,16 @@ public class OrdemServicoController {
         Page<DadosListagemOrdemServicoDTO> page = ordemServicoServices.listarTodasOrdensServico(pageable);
         return ResponseEntity.ok(page);
     }
+
+    @GetMapping("/tecnico/{id}")
+    public ResponseEntity<Page<DadosListagemOrdemServicoDTO>> listarOrdensServicoPorTecnico(@PathVariable Long id, Pageable pageable){
+        Page<DadosListagemOrdemServicoDTO> page = ordemServicoServices.listarOrdensServicoPorTecnico(id, pageable);
+        return ResponseEntity.ok(page);
+    }
+
+    @GetMapping("/cliente/{id}")
+    public ResponseEntity<Page<DadosListagemOrdemServicoDTO>> listarOrdensServicoPorCliente(@PathVariable Long id, Pageable pageable){
+        Page<DadosListagemOrdemServicoDTO> page = ordemServicoServices.listarOrdensServicoPorCliente(id, pageable);
+        return  ResponseEntity.ok(page);
+    }
 }

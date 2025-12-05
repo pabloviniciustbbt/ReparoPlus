@@ -156,4 +156,14 @@ public class OrdemServicoServices {
         return ordemServicoRepository.findAll(pageable)
                 .map(DadosListagemOrdemServicoDTO::new);
     }
+
+    public Page<DadosListagemOrdemServicoDTO> listarOrdensServicoPorTecnico(Long id, Pageable pageable) {
+        return ordemServicoRepository.findAllByTecnicoId(id, pageable)
+                .map(DadosListagemOrdemServicoDTO::new);
+    }
+
+    public Page<DadosListagemOrdemServicoDTO> listarOrdensServicoPorCliente(Long id, Pageable pageable) {
+        return ordemServicoRepository.findAllByClienteId(id,pageable)
+                .map(DadosListagemOrdemServicoDTO::new);
+    }
 }

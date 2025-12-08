@@ -55,9 +55,21 @@ public class OrdemServicoController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/todas")
     public ResponseEntity<Page<DadosListagemOrdemServicoDTO>> listarTodasOrdensServico(Pageable pageable){
         Page<DadosListagemOrdemServicoDTO> page = ordemServicoServices.listarTodasOrdensServico(pageable);
+        return ResponseEntity.ok(page);
+    }
+
+    @GetMapping("/abertas")
+    public ResponseEntity<Page<DadosListagemOrdemServicoDTO>> listarOrdensServicoAbertas(Pageable pageable){
+        Page<DadosListagemOrdemServicoDTO> page = ordemServicoServices.listarOrdensServicoAbertas(pageable);
+        return ResponseEntity.ok(page);
+    }
+
+    @GetMapping("/canceladas")
+    public ResponseEntity<Page<DadosListagemOrdemServicoDTO>> listarOrdensServicoCanceladas(Pageable pageable){
+        Page<DadosListagemOrdemServicoDTO> page = ordemServicoServices.listarOrdensServicoCanceladas(pageable);
         return ResponseEntity.ok(page);
     }
 

@@ -116,6 +116,11 @@ public class OrdemServicoServices {
         ordemServicoRepository.save(ordemServico);
     }
 
+    public void cancelarOrdemServico(Long id) {
+        OrdemServico ordemServico = ordemServicoRepository.getReferenceById(id);
+        ordemServico.cancelarOrdemServico();
+    }
+
     public OrdemServicoResponseDTO buscarOrdemServicoID(Long id) {
 
         Optional<OrdemServico> ordemServicoDTO = ordemServicoRepository.findById(id);

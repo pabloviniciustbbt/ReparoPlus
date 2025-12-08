@@ -6,6 +6,8 @@ import com.pabloleal.ReparoPlus.dto.PessoaUpdateRequestDTO;
 import com.pabloleal.ReparoPlus.models.Tecnico;
 import com.pabloleal.ReparoPlus.repositories.TecnicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -53,5 +55,20 @@ public class TecnicoServices {
         }
 
         return null;
+    }
+
+    public Page<PessoaResponseDTO> listarTecnicos(Pageable pageable) {
+        return tecnicoRepository.findAll(pageable)
+                .map(PessoaResponseDTO::new);
+    }
+
+    public Page<PessoaResponseDTO> listarTecnicosAtivos(Pageable pageable) {
+        return tecnicoRepository.findAllByAtivoTrue(pageable)
+                .map(PessoaResponseDTO::new);
+    }
+
+    public Page<PessoaResponseDTO> listarTecnicosInativos(Pageable pageable) {
+        return tecnicoRepository.findAllByAtivoFalse(pageable)
+                .map(PessoaResponseDTO::new);
     }
 }

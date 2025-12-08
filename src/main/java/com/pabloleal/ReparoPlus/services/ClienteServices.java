@@ -6,6 +6,8 @@ import com.pabloleal.ReparoPlus.dto.ClienteUpdateRequestDTO;
 import com.pabloleal.ReparoPlus.models.Cliente;
 import com.pabloleal.ReparoPlus.repositories.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -59,5 +61,20 @@ public class ClienteServices {
         }
 
         return null;
+    }
+
+    public Page<ClienteResponseDTO> listarClientes(Pageable pageable) {
+        return clienteRepository.findAll(pageable)
+                .map(ClienteResponseDTO::new);
+    }
+
+    public Page<ClienteResponseDTO> listarClientesAtivos(Pageable pageable) {
+        return clienteRepository.findAllByAtivoTrue(pageable)
+                .map(ClienteResponseDTO::new);
+    }
+
+    public Page<ClienteResponseDTO> listarClientesInativos(Pageable pageable) {
+        return clienteRepository.findAllByAtivoFalse(pageable)
+                .map(ClienteResponseDTO::new);
     }
 }

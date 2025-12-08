@@ -6,6 +6,8 @@ import com.pabloleal.ReparoPlus.dto.PessoaUpdateRequestDTO;
 import com.pabloleal.ReparoPlus.models.Atendente;
 import com.pabloleal.ReparoPlus.repositories.AtendenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 
@@ -54,4 +56,18 @@ public class AtendenteServices {
         return null;
     }
 
+    public Page<PessoaResponseDTO> listarAtendentes(Pageable pageable) {
+        return atendenteRepository.findAll(pageable)
+                .map(PessoaResponseDTO::new);
+    }
+
+    public Page<PessoaResponseDTO> listarAtendentesAtivos(Pageable pageable) {
+        return atendenteRepository.findAllByAtivoTrue(pageable)
+                .map(PessoaResponseDTO::new);
+    }
+
+    public Page<PessoaResponseDTO> listarAtendentesInativos(Pageable pageable) {
+        return atendenteRepository.findAllByAtivoFalse(pageable)
+                .map(PessoaResponseDTO::new);
+    }
 }

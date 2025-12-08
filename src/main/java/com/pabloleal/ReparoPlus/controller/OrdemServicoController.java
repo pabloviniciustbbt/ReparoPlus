@@ -56,7 +56,7 @@ public class OrdemServicoController {
     }
 
     @GetMapping("/todas")
-    public ResponseEntity<Page<DadosListagemOrdemServicoDTO>> listarTodasOrdensServico(Pageable pageable){
+    public ResponseEntity<Page<DadosListagemOrdemServicoDTO>> listarOrdensServico(Pageable pageable){
         Page<DadosListagemOrdemServicoDTO> page = ordemServicoServices.listarTodasOrdensServico(pageable);
         return ResponseEntity.ok(page);
     }

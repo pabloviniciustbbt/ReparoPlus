@@ -36,6 +36,13 @@ public class OrdemServicoController {
         return ResponseEntity.ok(dados);
     }
 
+    @DeleteMapping("{id}")
+    @Transactional
+    public ResponseEntity cancelarOrdemServico(@PathVariable Long id){
+        ordemServicoServices.cancelarOrdemServico(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/id/{id}")
     public ResponseEntity<OrdemServicoResponseDTO> buscarOrdemServicoID(@PathVariable Long id){
 

@@ -1,5 +1,8 @@
 package com.pabloleal.ReparoPlus.dto;
 
+import com.pabloleal.ReparoPlus.models.Atendente;
+import com.pabloleal.ReparoPlus.models.Tecnico;
+
 public record PessoaResponseDTO(
 
         Long id,
@@ -15,5 +18,27 @@ public record PessoaResponseDTO(
         this.nome = nome;
         this.email = email;
         this.telefone = telefone;
+    }
+
+    public PessoaResponseDTO(Atendente atendente){
+        this(
+                atendente.getId(),
+                atendente.getCpf(),
+                atendente.getNome(),
+                atendente.getEmail(),
+                atendente.getTelefone()
+
+        );
+    }
+
+    public PessoaResponseDTO(Tecnico tecnico){
+        this(
+                tecnico.getId(),
+                tecnico.getCpf(),
+                tecnico.getNome(),
+                tecnico.getEmail(),
+                tecnico.getTelefone()
+
+        );
     }
 }

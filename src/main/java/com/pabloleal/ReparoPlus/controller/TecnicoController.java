@@ -7,6 +7,8 @@ import com.pabloleal.ReparoPlus.services.TecnicoServices;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,6 +60,24 @@ public class TecnicoController {
         } else {
             return ResponseEntity.noContent().build();
         }
+    }
+
+    @GetMapping("/todos")
+    public ResponseEntity<Page<PessoaResponseDTO>> listarTecnicos(Pageable pageable){
+        Page<PessoaResponseDTO> page = tecnicoServices.listarTecnicos(pageable);
+        return ResponseEntity.ok(page);
+    }
+
+    @GetMapping("/ativos")
+    public ResponseEntity<Page<PessoaResponseDTO>> listarTecnicosAtivos(Pageable pageable){
+        Page<PessoaResponseDTO> page = tecnicoServices.listarTecnicosAtivos(pageable);
+        return ResponseEntity.ok(page);
+    }
+
+    @GetMapping("/inativos")
+    public ResponseEntity<Page<PessoaResponseDTO>> listarTecnicosInativos(Pageable pageable){
+        Page<PessoaResponseDTO> page = tecnicoServices.listarTecnicosInativos(pageable);
+        return ResponseEntity.ok(page);
     }
 
 }

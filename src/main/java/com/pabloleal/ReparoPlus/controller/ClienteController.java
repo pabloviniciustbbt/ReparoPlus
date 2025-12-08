@@ -7,6 +7,8 @@ import com.pabloleal.ReparoPlus.services.ClienteServices;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,5 +60,23 @@ public class ClienteController {
         } else {
             return ResponseEntity.noContent().build();
         }
+    }
+
+    @GetMapping("/todos")
+    public ResponseEntity<Page<ClienteResponseDTO>> listarClientes(Pageable pageable){
+        Page<ClienteResponseDTO> page = clienteServices.listarClientes(pageable);
+        return ResponseEntity.ok(page);
+    }
+
+    @GetMapping("/ativos")
+    public ResponseEntity<Page<ClienteResponseDTO>> listarClientesAtivos(Pageable pageable){
+        Page<ClienteResponseDTO> page = clienteServices.listarClientesAtivos(pageable);
+        return ResponseEntity.ok(page);
+    }
+
+    @GetMapping("/inativos")
+    public ResponseEntity<Page<ClienteResponseDTO>> listarClientesInativos(Pageable pageable){
+        Page<ClienteResponseDTO> page = clienteServices.listarClientesInativos(pageable);
+        return ResponseEntity.ok(page);
     }
 }

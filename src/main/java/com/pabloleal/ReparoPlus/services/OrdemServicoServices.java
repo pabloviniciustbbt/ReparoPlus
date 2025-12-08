@@ -162,6 +162,16 @@ public class OrdemServicoServices {
                 .map(DadosListagemOrdemServicoDTO::new);
     }
 
+    public Page<DadosListagemOrdemServicoDTO> listarOrdensServicoAbertas(Pageable pageable) {
+        return ordemServicoRepository.findAllByAtivoTrue(pageable)
+                .map(DadosListagemOrdemServicoDTO::new);
+    }
+
+    public Page<DadosListagemOrdemServicoDTO> listarOrdensServicoCanceladas(Pageable pageable) {
+        return ordemServicoRepository.findAllByAtivoFalse(pageable)
+                .map(DadosListagemOrdemServicoDTO::new);
+    }
+
     public Page<DadosListagemOrdemServicoDTO> listarOrdensServicoPorTecnico(Long id, Pageable pageable) {
         return ordemServicoRepository.findAllByTecnicoId(id, pageable)
                 .map(DadosListagemOrdemServicoDTO::new);
@@ -171,4 +181,5 @@ public class OrdemServicoServices {
         return ordemServicoRepository.findAllByClienteId(id,pageable)
                 .map(DadosListagemOrdemServicoDTO::new);
     }
+
 }

@@ -2,12 +2,6 @@ package com.pabloleal.ReparoPlus.models;
 
 import com.pabloleal.ReparoPlus.dto.OrdemServicoUpdateRequestDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
@@ -178,4 +172,7 @@ public class OrdemServico {
     }
 
 
+    public void cancelarOrdemServico() {
+        this.ativo = false;
+    }
 }

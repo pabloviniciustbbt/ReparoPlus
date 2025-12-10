@@ -12,7 +12,7 @@ public record OrdemServicoUpdateRequestDTO(
         Equipamento equipamento,
         Long atendenteId,
         Long tecnicoId,
-        StatusOS statusOS,
+        int statusOS,
         String observacoesTecnicas,
         String observacoesOrdemServico
 

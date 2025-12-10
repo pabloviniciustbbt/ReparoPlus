@@ -16,14 +16,9 @@ public record OrdemServicoRequestDTO(
         Long atendenteId,
         @NotNull(message = "ID do Técnico é obrigatório")
         Long tecnicoId,
-        StatusOS statusOS,
+        int statusOS,
         String observacoesTecnicas,
         String observacoesOrdemServico
 
 ) {
-        public OrdemServicoRequestDTO {
-                if (statusOS == null){
-                        statusOS = StatusOS.EM_ORCAMENTO;
-                }
-        }
 }

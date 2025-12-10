@@ -41,12 +41,21 @@ public class OrdemServico {
     public OrdemServico() {
     }
 
-    public OrdemServico(Cliente cliente, Equipamento equipamento, Atendente atendente, Tecnico tecnico, StatusOS statusOS, String observacoesTecnicas, String observacoesOrdemServico) {
+    public OrdemServico(Cliente cliente, Equipamento equipamento, Atendente atendente, Tecnico tecnico, int statusOS, String observacoesTecnicas, String observacoesOrdemServico) {
         this.cliente = cliente;
         this.equipamento = equipamento;
         this.atendente = atendente;
         this.tecnico = tecnico;
-        this.statusOS = statusOS;
+
+        //Definição de Status
+        StatusOS statusDefinido;
+        if (statusOS == 0 ){
+            statusDefinido = StatusOS.EM_ORCAMENTO;
+        } else{
+            statusDefinido = StatusOS.fromId(statusOS);
+        }
+        this.statusOS = statusDefinido;
+
         this.observacoesTecnicas = observacoesTecnicas;
         this.observacoesOrdemServico = observacoesOrdemServico;
     }
@@ -56,8 +65,8 @@ public class OrdemServico {
         if (dados.equipamento() != null){
             atualizarEquipamento(dados.equipamento());
         }
-        if (dados.statusOS() != null){
-            this.statusOS = dados.statusOS();
+        if (dados.statusOS() != 0){
+            this.statusOS = StatusOS.fromId(dados.statusOS());
         }
         if (dados.observacoesTecnicas() != null){
             this.observacoesTecnicas = dados.observacoesTecnicas();
@@ -166,7 +175,6 @@ public class OrdemServico {
     public boolean isAtivo() {
         return ativo;
     }
-
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
     }

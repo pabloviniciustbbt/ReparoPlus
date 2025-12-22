@@ -3,15 +3,14 @@ package com.pabloleal.ReparoPlus.services;
 import com.pabloleal.ReparoPlus.dto.*;
 import com.pabloleal.ReparoPlus.exceptions.OrdemServicoException;
 import com.pabloleal.ReparoPlus.models.*;
-import com.pabloleal.ReparoPlus.repositories.AtendenteRepository;
-import com.pabloleal.ReparoPlus.repositories.ClienteRepository;
-import com.pabloleal.ReparoPlus.repositories.OrdemServicoRepository;
-import com.pabloleal.ReparoPlus.repositories.TecnicoRepository;
+import com.pabloleal.ReparoPlus.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -25,6 +24,8 @@ public class OrdemServicoServices {
     private ClienteRepository clienteRepository;
     @Autowired
     private TecnicoRepository tecnicoRepository;
+    @Autowired
+    private HistoricoStatusOSRepository historicoStatusOSRepository;
 
 
     public OrdemServicoResponseDTO cadastrarOrdemServico(OrdemServicoRequestDTO dados){
@@ -51,8 +52,10 @@ public class OrdemServicoServices {
             }
 
             OrdemServico ordemServico = new OrdemServico(cliente, dados.equipamento(), atendente, tecnico, dados.statusOS(), dados.observacoesTecnicas(), dados.observacoesOrdemServico());
-
             ordemServico = ordemServicoRepository.save(ordemServico);
+
+            HistoricoStatusOS historicoStatusOS = new HistoricoStatusOS(ordemServico, atendente, dados.statusOS());
+            historicoStatusOSRepository.save(historicoStatusOS);
 
             return new OrdemServicoResponseDTO(
                     ordemServico.getId(),
@@ -86,6 +89,12 @@ public class OrdemServicoServices {
         OrdemServico ordemServico = ordemServicoRepository.findById(dados.id()).
                 orElseThrow(() -> new OrdemServicoException("Ordem de Serviço não encontrada"));
 
+        StatusOS statusAnterior = ordemServico.getStatusOS();
+
+        if (!ordemServico.isAtivo()){
+            throw new OrdemServicoException("Não é possível atualizar uma ordem de serviço cancelada");
+        }
+
         if (dados.cpfCliente() != null){
             Cliente cliente = clienteRepository.findByCpf(dados.cpfCliente()).
                     orElseThrow(() -> new OrdemServicoException("Cliente com CPF " + dados.cpfCliente() + " não encontrado"));
@@ -112,8 +121,12 @@ public class OrdemServicoServices {
         }
 
         ordemServico.atualizarOrdemServico(dados);
-
         ordemServicoRepository.save(ordemServico);
+
+        if (dados.statusOS() != 0 && statusAnterior != StatusOS.fromId(dados.statusOS())){
+            HistoricoStatusOS historicoStatusOS = new HistoricoStatusOS(ordemServico, ordemServico.getAtendente(), ordemServico.getStatusOS().getId());
+            historicoStatusOSRepository.save(historicoStatusOS);
+        }
     }
 
     public void cancelarOrdemServico(Long id) {
@@ -182,4 +195,10 @@ public class OrdemServicoServices {
                 .map(DadosListagemOrdemServicoDTO::new);
     }
 
+    public List<HistoricoStatusOSResponseDTO> listarHistoricoStatusOS(Long id) {
+        return historicoStatusOSRepository.findByOrdemServicoIdOrderByDataHoraAlteracaoDesc(id).stream()
+                .map(HistoricoStatusOSResponseDTO::new)
+                .collect(Collectors.toList());
+
+    }
 }

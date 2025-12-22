@@ -1,9 +1,6 @@
 package com.pabloleal.ReparoPlus.controller;
 
-import com.pabloleal.ReparoPlus.dto.DadosListagemOrdemServicoDTO;
-import com.pabloleal.ReparoPlus.dto.OrdemServicoRequestDTO;
-import com.pabloleal.ReparoPlus.dto.OrdemServicoResponseDTO;
-import com.pabloleal.ReparoPlus.dto.OrdemServicoUpdateRequestDTO;
+import com.pabloleal.ReparoPlus.dto.*;
 import com.pabloleal.ReparoPlus.services.OrdemServicoServices;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -12,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/ordemservico")
@@ -23,7 +21,6 @@ public class OrdemServicoController {
     @PostMapping
     @Transactional
     public ResponseEntity<OrdemServicoRequestDTO> cadastrarOrdemServico(@RequestBody @Valid OrdemServicoRequestDTO dados){
-
         ordemServicoServices.cadastrarOrdemServico(dados);
         return ResponseEntity.ok(dados);
     }
@@ -31,7 +28,6 @@ public class OrdemServicoController {
     @PutMapping
     @Transactional
     public ResponseEntity<OrdemServicoUpdateRequestDTO> atualizarOrdemServico(@RequestBody OrdemServicoUpdateRequestDTO dados){
-
         ordemServicoServices.atualizarOrdemServico(dados);
         return ResponseEntity.ok(dados);
     }
@@ -45,7 +41,6 @@ public class OrdemServicoController {
 
     @GetMapping("/id/{id}")
     public ResponseEntity<OrdemServicoResponseDTO> buscarOrdemServicoID(@PathVariable Long id){
-
         OrdemServicoResponseDTO ordemServicoDTO = ordemServicoServices.buscarOrdemServicoID(id);
 
         if (ordemServicoDTO != null){
@@ -83,5 +78,11 @@ public class OrdemServicoController {
     public ResponseEntity<Page<DadosListagemOrdemServicoDTO>> listarOrdensServicoPorCliente(@PathVariable Long id, Pageable pageable){
         Page<DadosListagemOrdemServicoDTO> page = ordemServicoServices.listarOrdensServicoPorCliente(id, pageable);
         return  ResponseEntity.ok(page);
+    }
+
+    @GetMapping("/historicoStatusOS/{id}")
+    public ResponseEntity<List<HistoricoStatusOSResponseDTO>> listarHistoricoStatusOS(@PathVariable Long id){
+        List<HistoricoStatusOSResponseDTO> historicoStatusOSResponseDTOS = ordemServicoServices.listarHistoricoStatusOS(id);
+        return ResponseEntity.ok(historicoStatusOSResponseDTOS);
     }
 }

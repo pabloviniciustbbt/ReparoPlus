@@ -35,6 +35,10 @@ public enum StatusOS {
     public static StatusOS fromId(int id){
         StatusOS[] list = StatusOS.values();
 
+        if (id == 0){
+            return StatusOS.EM_ORCAMENTO;
+        }
+
         for (int i = 0; i < list.length; i++) {
             StatusOS statusOS = list[i];
             if (statusOS.id == id){

@@ -12,6 +12,9 @@
         @OneToMany(mappedBy = "atendente", fetch = FetchType.LAZY)
         private Set<OrdemServico> ordensServico = new HashSet<>();
 
+        @OneToMany(mappedBy = "atendente", fetch = FetchType.LAZY)
+        private Set<HistoricoStatusOS> historicoStatusOS = new HashSet<>();
+
         public Atendente() {
         }
 
@@ -25,5 +28,12 @@
 
         public void setOrdensServico(Set<OrdemServico> ordensServico) {
             this.ordensServico = ordensServico;
+        }
+        public Set<HistoricoStatusOS> getHistoricoStatusOS() {
+            return historicoStatusOS;
+        }
+
+        public void setHistoricoStatusOS(Set<HistoricoStatusOS> historicoStatusOS) {
+            this.historicoStatusOS = historicoStatusOS;
         }
     }

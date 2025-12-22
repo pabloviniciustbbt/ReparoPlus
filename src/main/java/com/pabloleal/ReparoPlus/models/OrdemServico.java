@@ -4,6 +4,8 @@ import com.pabloleal.ReparoPlus.dto.OrdemServicoUpdateRequestDTO;
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "ordens_servico")
@@ -31,6 +33,9 @@ public class OrdemServico {
     @Enumerated(EnumType.STRING)
     private StatusOS statusOS;
 
+    @OneToMany(mappedBy = "ordemServico", fetch = FetchType.LAZY)
+    private Set<HistoricoStatusOS> historicoStatusOS = new HashSet<>();
+
     private String observacoesTecnicas;
 
     private String observacoesOrdemServico;
@@ -46,16 +51,7 @@ public class OrdemServico {
         this.equipamento = equipamento;
         this.atendente = atendente;
         this.tecnico = tecnico;
-
-        //Definição de Status
-        StatusOS statusDefinido;
-        if (statusOS == 0 ){
-            statusDefinido = StatusOS.EM_ORCAMENTO;
-        } else{
-            statusDefinido = StatusOS.fromId(statusOS);
-        }
-        this.statusOS = statusDefinido;
-
+        this.statusOS = StatusOS.fromId(statusOS);
         this.observacoesTecnicas = observacoesTecnicas;
         this.observacoesOrdemServico = observacoesOrdemServico;
     }
@@ -179,6 +175,13 @@ public class OrdemServico {
         this.ativo = ativo;
     }
 
+    public Set<HistoricoStatusOS> getHistoricoStatusOS() {
+        return historicoStatusOS;
+    }
+
+    public void setHistoricoStatusOS(Set<HistoricoStatusOS> historicoStatusOS) {
+        this.historicoStatusOS = historicoStatusOS;
+    }
 
     public void cancelarOrdemServico() {
         this.ativo = false;

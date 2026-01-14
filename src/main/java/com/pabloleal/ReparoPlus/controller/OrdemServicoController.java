@@ -1,14 +1,17 @@
 package com.pabloleal.ReparoPlus.controller;
 
 import com.pabloleal.ReparoPlus.dto.*;
+import com.pabloleal.ReparoPlus.models.OrdemServico;
 import com.pabloleal.ReparoPlus.services.OrdemServicoServices;
-import jakarta.transaction.Transactional;
+import com.pabloleal.ReparoPlus.utils.AvisoContext;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -19,35 +22,36 @@ public class OrdemServicoController {
     private OrdemServicoServices ordemServicoServices;
 
     @PostMapping
-    @Transactional
-    public ResponseEntity<OrdemServicoRequestDTO> cadastrarOrdemServico(@RequestBody @Valid OrdemServicoRequestDTO dados){
-        ordemServicoServices.cadastrarOrdemServico(dados);
-        return ResponseEntity.ok(dados);
+    public ResponseEntity<OrdemServicoResponseDTO> cadastrarOrdemServico(@RequestBody @Valid OrdemServicoRequestDTO dados, UriComponentsBuilder uriComponentsBuilder){
+        OrdemServico ordemServico = ordemServicoServices.cadastrarOrdemServico(dados);
+
+        URI uri = uriComponentsBuilder.path("/ordemservico/{id}").buildAndExpand(ordemServico.getId()).toUri();
+
+        ResponseEntity.BodyBuilder response = ResponseEntity.created(uri);
+
+        if (AvisoContext.temAvisos()){
+            String avisos = String.join(" | ", AvisoContext.obterAvisos());
+            response.header("X-Avisos", avisos);
+        }
+        return response.body(new OrdemServicoResponseDTO(ordemServico));
     }
 
     @PutMapping
-    @Transactional
-    public ResponseEntity<OrdemServicoUpdateRequestDTO> atualizarOrdemServico(@RequestBody OrdemServicoUpdateRequestDTO dados){
-        ordemServicoServices.atualizarOrdemServico(dados);
-        return ResponseEntity.ok(dados);
+    public ResponseEntity atualizarOrdemServico(@RequestBody OrdemServicoUpdateRequestDTO dados){
+        OrdemServico ordemServico = ordemServicoServices.atualizarOrdemServico(dados);
+        return ResponseEntity.ok(new OrdemServicoResponseDTO(ordemServico));
     }
 
     @DeleteMapping("{id}")
-    @Transactional
     public ResponseEntity cancelarOrdemServico(@PathVariable Long id){
         ordemServicoServices.cancelarOrdemServico(id);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/id/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<OrdemServicoResponseDTO> buscarOrdemServicoID(@PathVariable Long id){
-        OrdemServicoResponseDTO ordemServicoDTO = ordemServicoServices.buscarOrdemServicoID(id);
-
-        if (ordemServicoDTO != null){
-            return ResponseEntity.ok(ordemServicoDTO);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        OrdemServico ordemServico = ordemServicoServices.buscarOrdemServicoID(id);
+        return ResponseEntity.ok(new OrdemServicoResponseDTO(ordemServico));
     }
 
     @GetMapping("/todas")

@@ -17,4 +17,17 @@ public record OrdemServicoResponseDTO(
         OffsetDateTime dataHoraAbertura
 
 ) {
+    public OrdemServicoResponseDTO(OrdemServico ordemServico) {
+        this(
+                ordemServico.getId(),
+                new ClienteResponseDTO(ordemServico.getCliente()),
+                ordemServico.getEquipamento(),
+                new PessoaResumoResponseDTO(ordemServico.getAtendente()),
+                new PessoaResumoResponseDTO(ordemServico.getTecnico()),
+                ordemServico.getStatusOS(),
+                ordemServico.getObservacoesTecnicas(),
+                ordemServico.getObservacoesOrdemServico(),
+                ordemServico.getDataHoraAbertura()
+        );
+    }
 }

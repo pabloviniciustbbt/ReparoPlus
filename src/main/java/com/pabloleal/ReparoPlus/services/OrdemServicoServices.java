@@ -1,15 +1,18 @@
 package com.pabloleal.ReparoPlus.services;
 
 import com.pabloleal.ReparoPlus.dto.*;
-import com.pabloleal.ReparoPlus.exceptions.OrdemServicoException;
+import com.pabloleal.ReparoPlus.exceptions.EntidadeCadastradaException;
+import com.pabloleal.ReparoPlus.exceptions.EntidadeInativaException;
 import com.pabloleal.ReparoPlus.models.*;
 import com.pabloleal.ReparoPlus.repositories.*;
+import com.pabloleal.ReparoPlus.utils.AvisoContext;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -28,27 +31,43 @@ public class OrdemServicoServices {
     private HistoricoStatusOSRepository historicoStatusOSRepository;
 
 
-    public OrdemServicoResponseDTO cadastrarOrdemServico(OrdemServicoRequestDTO dados){
+    @Transactional
+    public OrdemServico cadastrarOrdemServico(OrdemServicoRequestDTO dados){
 
             Cliente cliente = clienteRepository.findByCpf(dados.cpfCliente())
-                    .orElseThrow(() -> new OrdemServicoException("Cliente com CPF " + dados.cpfCliente() + " não cadastrado" +
+                    .orElseThrow(() -> new EntityNotFoundException("Cliente com CPF " + dados.cpfCliente() + " não cadastrado" +
                             "\nPor favor, cadastre o cliente antes de criar a ordem de serviço"
             ));
             if (!cliente.getAtivo()){
-                throw new OrdemServicoException("Cliente com CPF " + dados.cpfCliente() + " está inativo");
+                throw new EntidadeInativaException("Cliente com CPF " + dados.cpfCliente() + " está inativo");
             }
 
             Atendente atendente = atendenteRepository.findById(dados.atendenteId())
-                    .orElseThrow(() -> new OrdemServicoException("Atendente com ID " + dados.atendenteId() + " não encontrado"));
+                    .orElseThrow(() -> new EntityNotFoundException("Atendente com ID " + dados.atendenteId() + " não encontrado"));
 
             if (!atendente.getAtivo()){
-                throw new OrdemServicoException("Atendente com ID " + dados.atendenteId() + " está inativo");
+                throw new EntidadeInativaException("Atendente com ID " + dados.atendenteId() + " está inativo");
             }
 
             Tecnico tecnico = tecnicoRepository.findById(dados.tecnicoId())
-                    .orElseThrow(() -> new OrdemServicoException("Tecnico com ID " + dados.tecnicoId() + " não encontrado"));
+                    .orElseThrow(() -> new EntityNotFoundException("Tecnico com ID " + dados.tecnicoId() + " não encontrado"));
             if (!tecnico.getAtivo()){
-                throw new OrdemServicoException("Tecnico com ID " + dados.tecnicoId() + " está inativo");
+                throw new EntidadeInativaException("Tecnico com ID " + dados.tecnicoId() + " está inativo");
+            }
+
+            List<OrdemServico> outrasOrdemServico = ordemServicoRepository.findAllByClienteId(cliente.getId());
+
+            if (!outrasOrdemServico.isEmpty()){
+                String aviso = String.format("O Cliente " + cliente.getNome() +" possui " + outrasOrdemServico.size() + " OS`s em aberto");
+                AvisoContext.adicionarAviso(aviso);
+
+                for (int i = 0; i < outrasOrdemServico.size(); i++) {
+                    OrdemServico os = outrasOrdemServico.get(i);
+
+                    if (os.getEquipamento().getNumeroSerie().equals(dados.equipamento().getNumeroSerie()) && os.isAtivo()){
+                        throw new EntidadeCadastradaException("Equipamento com o serial " + dados.equipamento().getNumeroSerie() + " já está cadastrado na OS " + os.getId());
+                    }
+                }
             }
 
             OrdemServico ordemServico = new OrdemServico(cliente, dados.equipamento(), atendente, tecnico, dados.statusOS(), dados.observacoesTecnicas(), dados.observacoesOrdemServico());
@@ -57,65 +76,42 @@ public class OrdemServicoServices {
             HistoricoStatusOS historicoStatusOS = new HistoricoStatusOS(ordemServico, atendente, dados.statusOS());
             historicoStatusOSRepository.save(historicoStatusOS);
 
-            return new OrdemServicoResponseDTO(
-                    ordemServico.getId(),
-                    new ClienteResponseDTO(
-                            ordemServico.getCliente().getId(),
-                            ordemServico.getCliente().getCpf(),
-                            ordemServico.getCliente().getNome(),
-                            ordemServico.getCliente().getEmail(),
-                            ordemServico.getCliente().getTelefone(),
-                            ordemServico.getCliente().getEndereco()
-                    ),
-                    ordemServico.getEquipamento(),
-                    //Atendente
-                    new PessoaResumoResponseDTO(
-                            ordemServico.getAtendente().getId(),
-                            ordemServico.getAtendente().getNome()
-                    ),
-                    //Tecnico
-                    new PessoaResumoResponseDTO(
-                            ordemServico.getTecnico().getId(),
-                            ordemServico.getTecnico().getNome()
-                    ),
-                    ordemServico.getStatusOS(),
-                    ordemServico.getObservacoesTecnicas(),
-                    ordemServico.getObservacoesOrdemServico(),
-                    ordemServico.getDataHoraAbertura());
+            return ordemServico;
     }
 
-    public void atualizarOrdemServico(OrdemServicoUpdateRequestDTO dados) {
+    @Transactional
+    public OrdemServico atualizarOrdemServico(OrdemServicoUpdateRequestDTO dados) {
 
         OrdemServico ordemServico = ordemServicoRepository.findById(dados.id()).
-                orElseThrow(() -> new OrdemServicoException("Ordem de Serviço não encontrada"));
+                orElseThrow(() -> new EntityNotFoundException("Ordem de Serviço não encontrada"));
 
         StatusOS statusAnterior = ordemServico.getStatusOS();
 
         if (!ordemServico.isAtivo()){
-            throw new OrdemServicoException("Não é possível atualizar uma ordem de serviço cancelada");
+            throw new EntidadeInativaException("Não é possível atualizar uma ordem de serviço cancelada");
         }
 
         if (dados.cpfCliente() != null){
             Cliente cliente = clienteRepository.findByCpf(dados.cpfCliente()).
-                    orElseThrow(() -> new OrdemServicoException("Cliente com CPF " + dados.cpfCliente() + " não encontrado"));
+                    orElseThrow(() -> new EntityNotFoundException("Cliente com CPF " + dados.cpfCliente() + " não encontrado"));
             if (!cliente.getAtivo()){
-                throw new OrdemServicoException("Cliente com CPF " + dados.cpfCliente() + " está inativo");
+                throw new EntidadeInativaException("Cliente com CPF " + dados.cpfCliente() + " está inativo");
             }
             ordemServico.setCliente(cliente);
         }
         if (dados.atendenteId() != null) {
             Atendente atendente = atendenteRepository.findById(dados.atendenteId()).
-                    orElseThrow(() -> new OrdemServicoException("Atendente com ID " + dados.atendenteId() + " não encontrado"));
+                    orElseThrow(() -> new EntityNotFoundException("Atendente com ID " + dados.atendenteId() + " não encontrado"));
             if (!atendente.getAtivo()){
-                throw new OrdemServicoException("Atendente com ID " + dados.atendenteId() + " está inativo");
+                throw new EntidadeInativaException("Atendente com ID " + dados.atendenteId() + " está inativo");
             }
             ordemServico.setAtendente(atendente);
         }
         if (dados.tecnicoId() != null) {
             Tecnico tecnico = tecnicoRepository.findById(dados.tecnicoId()).
-                    orElseThrow(() -> new OrdemServicoException("Tecnico com ID " + dados.tecnicoId() + " não encontrado"));
+                    orElseThrow(() -> new EntityNotFoundException("Tecnico com ID " + dados.tecnicoId() + " não encontrado"));
             if (!tecnico.getAtivo()){
-                throw new OrdemServicoException("Tecnico com ID " + dados.tecnicoId() + " está inativo");
+                throw new EntidadeInativaException("Tecnico com ID " + dados.tecnicoId() + " está inativo");
             }
             ordemServico.setTecnico(tecnico);
         }
@@ -127,47 +123,20 @@ public class OrdemServicoServices {
             HistoricoStatusOS historicoStatusOS = new HistoricoStatusOS(ordemServico, ordemServico.getAtendente(), ordemServico.getStatusOS().getId());
             historicoStatusOSRepository.save(historicoStatusOS);
         }
+
+        return ordemServico;
     }
 
+    @Transactional
     public void cancelarOrdemServico(Long id) {
         OrdemServico ordemServico = ordemServicoRepository.getReferenceById(id);
         ordemServico.cancelarOrdemServico();
     }
 
-    public OrdemServicoResponseDTO buscarOrdemServicoID(Long id) {
-
-        Optional<OrdemServico> ordemServicoDTO = ordemServicoRepository.findById(id);
-
-        if (ordemServicoDTO.isPresent()){
-            OrdemServico os = ordemServicoDTO.get();
-            return new OrdemServicoResponseDTO(
-                    os.getId(),
-                    new ClienteResponseDTO(
-                            os.getCliente().getId(),
-                            os.getCliente().getCpf(),
-                            os.getCliente().getNome(),
-                            os.getCliente().getEmail(),
-                            os.getCliente().getTelefone(),
-                            os.getCliente().getEndereco()
-                            ),
-                    os.getEquipamento(),
-                    //Atendente
-                    new PessoaResumoResponseDTO(
-                            os.getAtendente().getId(),
-                            os.getAtendente().getNome()
-                    ),
-                    //Tecnico
-                    new PessoaResumoResponseDTO(
-                            os.getTecnico().getId(),
-                            os.getTecnico().getNome()
-                    ),
-                    os.getStatusOS(),
-                    os.getObservacoesTecnicas(),
-                    os.getObservacoesOrdemServico(),
-                    os.getDataHoraAbertura());
-        }
-
-        return null;
+    public OrdemServico buscarOrdemServicoID(Long id) {
+        OrdemServico ordemServico = ordemServicoRepository.findById(id).
+                orElseThrow(() -> new EntityNotFoundException("Ordem de Serviço não encontrada"));
+        return ordemServico;
     }
 
     public Page<DadosListagemOrdemServicoDTO> listarTodasOrdensServico(Pageable pageable) {

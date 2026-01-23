@@ -22,19 +22,21 @@ public class Cliente extends Pessoa{
     public Cliente(){}
 
     public Cliente(ClienteCreateRequestDTO clienteDTO){
-        super(clienteDTO.cpf(), clienteDTO.nome(), clienteDTO.email(), clienteDTO.telefone());
+        super(formatarCpf(clienteDTO.cpf()), clienteDTO.nome(), clienteDTO.email(), clienteDTO.telefone());
         this.endereco = clienteDTO.endereco();
     }
 
     public void atualizarCliente(ClienteUpdateRequestDTO clienteDTO) {
 
+        if (clienteDTO.cpf() != null){
+            this.setCpf(Pessoa.formatarCpf(clienteDTO.cpf()));
+        }
         if (clienteDTO.nome() != null){
             this.setNome(clienteDTO.nome());
         }
         if (clienteDTO.email() != null){
             this.setEmail(clienteDTO.email());
         }
-
         if (clienteDTO.telefone() != null){
             this.setTelefone(clienteDTO.telefone());
         }

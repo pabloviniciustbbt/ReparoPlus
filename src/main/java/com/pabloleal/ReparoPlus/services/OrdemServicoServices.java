@@ -1,8 +1,11 @@
 package com.pabloleal.ReparoPlus.services;
 
-import com.pabloleal.ReparoPlus.dto.*;
+import com.pabloleal.ReparoPlus.dto.DadosListagemOrdemServicoDTO;
+import com.pabloleal.ReparoPlus.dto.HistoricoStatusOSResponseDTO;
+import com.pabloleal.ReparoPlus.dto.OrdemServicoRequestDTO;
+import com.pabloleal.ReparoPlus.dto.OrdemServicoUpdateRequestDTO;
+import com.pabloleal.ReparoPlus.exceptions.EntidadeAtivaInativaException;
 import com.pabloleal.ReparoPlus.exceptions.EntidadeCadastradaException;
-import com.pabloleal.ReparoPlus.exceptions.EntidadeInativaException;
 import com.pabloleal.ReparoPlus.models.*;
 import com.pabloleal.ReparoPlus.repositories.*;
 import com.pabloleal.ReparoPlus.utils.AvisoContext;
@@ -30,53 +33,54 @@ public class OrdemServicoServices {
     @Autowired
     private HistoricoStatusOSRepository historicoStatusOSRepository;
 
-
     @Transactional
-    public OrdemServico cadastrarOrdemServico(OrdemServicoRequestDTO dados){
+    public OrdemServico cadastrarOrdemServico(OrdemServicoRequestDTO dados) {
 
-            Cliente cliente = clienteRepository.findByCpf(dados.cpfCliente())
-                    .orElseThrow(() -> new EntityNotFoundException("Cliente com CPF " + dados.cpfCliente() + " não cadastrado" +
-                            "\nPor favor, cadastre o cliente antes de criar a ordem de serviço"
-            ));
-            if (!cliente.getAtivo()){
-                throw new EntidadeInativaException("Cliente com CPF " + dados.cpfCliente() + " está inativo");
-            }
+        String cpfFormatado = Pessoa.formatarCpf(dados.cpfCliente());
 
-            Atendente atendente = atendenteRepository.findById(dados.atendenteId())
-                    .orElseThrow(() -> new EntityNotFoundException("Atendente com ID " + dados.atendenteId() + " não encontrado"));
+        Cliente cliente = clienteRepository.findByCpf(cpfFormatado)
+                .orElseThrow(() -> new EntityNotFoundException("Cliente com CPF " + dados.cpfCliente() + " não cadastrado" +
+                        "\nPor favor, cadastre o cliente antes de criar a ordem de serviço"
+                ));
+        if (!cliente.getAtivo()) {
+            throw new EntidadeAtivaInativaException("Cliente com CPF " + dados.cpfCliente() + " está inativo");
+        }
 
-            if (!atendente.getAtivo()){
-                throw new EntidadeInativaException("Atendente com ID " + dados.atendenteId() + " está inativo");
-            }
+        Atendente atendente = atendenteRepository.findById(dados.atendenteId())
+                .orElseThrow(() -> new EntityNotFoundException("Atendente com ID " + dados.atendenteId() + " não encontrado"));
 
-            Tecnico tecnico = tecnicoRepository.findById(dados.tecnicoId())
-                    .orElseThrow(() -> new EntityNotFoundException("Tecnico com ID " + dados.tecnicoId() + " não encontrado"));
-            if (!tecnico.getAtivo()){
-                throw new EntidadeInativaException("Tecnico com ID " + dados.tecnicoId() + " está inativo");
-            }
+        if (!atendente.getAtivo()) {
+            throw new EntidadeAtivaInativaException("Atendente com ID " + dados.atendenteId() + " está inativo");
+        }
 
-            List<OrdemServico> outrasOrdemServico = ordemServicoRepository.findAllByClienteId(cliente.getId());
+        Tecnico tecnico = tecnicoRepository.findById(dados.tecnicoId())
+                .orElseThrow(() -> new EntityNotFoundException("Tecnico com ID " + dados.tecnicoId() + " não encontrado"));
+        if (!tecnico.getAtivo()) {
+            throw new EntidadeAtivaInativaException("Tecnico com ID " + dados.tecnicoId() + " está inativo");
+        }
 
-            if (!outrasOrdemServico.isEmpty()){
-                String aviso = String.format("O Cliente " + cliente.getNome() +" possui " + outrasOrdemServico.size() + " OS`s em aberto");
-                AvisoContext.adicionarAviso(aviso);
+        List<OrdemServico> outrasOrdemServico = ordemServicoRepository.findAllByClienteIdAndAtivoTrue(cliente.getId());
 
-                for (int i = 0; i < outrasOrdemServico.size(); i++) {
-                    OrdemServico os = outrasOrdemServico.get(i);
+        if (!outrasOrdemServico.isEmpty()) {
+            String aviso = String.format("O Cliente " + cliente.getNome() + " possui " + outrasOrdemServico.size() + " OS`s em aberto");
+            AvisoContext.adicionarAviso(aviso);
 
-                    if (os.getEquipamento().getNumeroSerie().equals(dados.equipamento().getNumeroSerie()) && os.isAtivo()){
-                        throw new EntidadeCadastradaException("Equipamento com o serial " + dados.equipamento().getNumeroSerie() + " já está cadastrado na OS " + os.getId());
-                    }
+            for (int i = 0; i < outrasOrdemServico.size(); i++) {
+                OrdemServico os = outrasOrdemServico.get(i);
+
+                if (os.getEquipamento().getNumeroSerie().equals(dados.equipamento().getNumeroSerie()) && os.isAtivo()) {
+                    throw new EntidadeCadastradaException("Equipamento com o serial " + dados.equipamento().getNumeroSerie() + " já está cadastrado na OS " + os.getId());
                 }
             }
+        }
 
-            OrdemServico ordemServico = new OrdemServico(cliente, dados.equipamento(), atendente, tecnico, dados.statusOS(), dados.observacoesTecnicas(), dados.observacoesOrdemServico());
-            ordemServico = ordemServicoRepository.save(ordemServico);
+        OrdemServico ordemServico = new OrdemServico(cliente, dados.equipamento(), atendente, tecnico, dados.statusOS(), dados.observacoesTecnicas(), dados.observacoesOrdemServico());
+        ordemServico = ordemServicoRepository.save(ordemServico);
 
-            HistoricoStatusOS historicoStatusOS = new HistoricoStatusOS(ordemServico, atendente, dados.statusOS());
-            historicoStatusOSRepository.save(historicoStatusOS);
+        HistoricoStatusOS historicoStatusOS = new HistoricoStatusOS(ordemServico, atendente, dados.statusOS());
+        historicoStatusOSRepository.save(historicoStatusOS);
 
-            return ordemServico;
+        return ordemServico;
     }
 
     @Transactional
@@ -87,31 +91,33 @@ public class OrdemServicoServices {
 
         StatusOS statusAnterior = ordemServico.getStatusOS();
 
-        if (!ordemServico.isAtivo()){
-            throw new EntidadeInativaException("Não é possível atualizar uma ordem de serviço cancelada");
+        if (!ordemServico.isAtivo()) {
+            throw new EntidadeAtivaInativaException("Não é possível atualizar uma ordem de serviço cancelada");
         }
 
-        if (dados.cpfCliente() != null){
-            Cliente cliente = clienteRepository.findByCpf(dados.cpfCliente()).
+        if (dados.cpfCliente() != null) {
+            String cpfFormatado = Pessoa.formatarCpf(dados.cpfCliente());
+
+            Cliente cliente = clienteRepository.findByCpf(cpfFormatado).
                     orElseThrow(() -> new EntityNotFoundException("Cliente com CPF " + dados.cpfCliente() + " não encontrado"));
-            if (!cliente.getAtivo()){
-                throw new EntidadeInativaException("Cliente com CPF " + dados.cpfCliente() + " está inativo");
+            if (!cliente.getAtivo()) {
+                throw new EntidadeAtivaInativaException("Cliente com CPF " + dados.cpfCliente() + " está inativo");
             }
             ordemServico.setCliente(cliente);
         }
         if (dados.atendenteId() != null) {
             Atendente atendente = atendenteRepository.findById(dados.atendenteId()).
                     orElseThrow(() -> new EntityNotFoundException("Atendente com ID " + dados.atendenteId() + " não encontrado"));
-            if (!atendente.getAtivo()){
-                throw new EntidadeInativaException("Atendente com ID " + dados.atendenteId() + " está inativo");
+            if (!atendente.getAtivo()) {
+                throw new EntidadeAtivaInativaException("Atendente com ID " + dados.atendenteId() + " está inativo");
             }
             ordemServico.setAtendente(atendente);
         }
         if (dados.tecnicoId() != null) {
             Tecnico tecnico = tecnicoRepository.findById(dados.tecnicoId()).
                     orElseThrow(() -> new EntityNotFoundException("Tecnico com ID " + dados.tecnicoId() + " não encontrado"));
-            if (!tecnico.getAtivo()){
-                throw new EntidadeInativaException("Tecnico com ID " + dados.tecnicoId() + " está inativo");
+            if (!tecnico.getAtivo()) {
+                throw new EntidadeAtivaInativaException("Tecnico com ID " + dados.tecnicoId() + " está inativo");
             }
             ordemServico.setTecnico(tecnico);
         }
@@ -119,7 +125,7 @@ public class OrdemServicoServices {
         ordemServico.atualizarOrdemServico(dados);
         ordemServicoRepository.save(ordemServico);
 
-        if (dados.statusOS() != 0 && statusAnterior != StatusOS.fromId(dados.statusOS())){
+        if (dados.statusOS() != 0 && statusAnterior != StatusOS.fromId(dados.statusOS())) {
             HistoricoStatusOS historicoStatusOS = new HistoricoStatusOS(ordemServico, ordemServico.getAtendente(), ordemServico.getStatusOS().getId());
             historicoStatusOSRepository.save(historicoStatusOS);
         }
@@ -160,7 +166,7 @@ public class OrdemServicoServices {
     }
 
     public Page<DadosListagemOrdemServicoDTO> listarOrdensServicoPorCliente(Long id, Pageable pageable) {
-        return ordemServicoRepository.findAllByClienteId(id,pageable)
+        return ordemServicoRepository.findAllByClienteId(id, pageable)
                 .map(DadosListagemOrdemServicoDTO::new);
     }
 

@@ -3,6 +3,7 @@ package com.pabloleal.ReparoPlus.controller;
 import com.pabloleal.ReparoPlus.dto.PessoaCreateRequestDTO;
 import com.pabloleal.ReparoPlus.dto.PessoaResponseDTO;
 import com.pabloleal.ReparoPlus.dto.PessoaUpdateRequestDTO;
+import com.pabloleal.ReparoPlus.models.Tecnico;
 import com.pabloleal.ReparoPlus.services.TecnicoServices;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -11,6 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
+import java.net.URI;
 
 @RestController
 @RequestMapping("/tecnico")
@@ -21,16 +24,18 @@ public class TecnicoController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<PessoaCreateRequestDTO> cadastrarTecnico(@RequestBody @Valid PessoaCreateRequestDTO dados){
-        tecnicoServices.cadastrarTecnico(dados);
-        return ResponseEntity.ok(dados);
+    public ResponseEntity<PessoaResponseDTO> cadastrarTecnico(@RequestBody @Valid PessoaCreateRequestDTO dados, UriComponentsBuilder uriComponentsBuilder){
+        Tecnico tecnico = tecnicoServices.cadastrarTecnico(dados);
+
+        URI uri = uriComponentsBuilder.path("/tecnico/{id}").buildAndExpand(tecnico.getId()).toUri();
+        return ResponseEntity.created(uri).body(new PessoaResponseDTO(tecnico));
     }
 
     @PutMapping
     @Transactional
-    public ResponseEntity<PessoaUpdateRequestDTO> atualizarTecnico(@RequestBody @Valid PessoaUpdateRequestDTO dados){
-        tecnicoServices.atualizarTecnico(dados);
-        return ResponseEntity.ok(dados);
+    public ResponseEntity<PessoaResponseDTO> atualizarTecnico(@RequestBody @Valid PessoaUpdateRequestDTO dados){
+        Tecnico tecnico = tecnicoServices.atualizarTecnico(dados);
+        return ResponseEntity.ok(new PessoaResponseDTO(tecnico));
     }
 
     @DeleteMapping ("/{id}")
@@ -40,26 +45,25 @@ public class TecnicoController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/id/{id}")
-    public ResponseEntity<PessoaResponseDTO> buscarTecnicoID(@PathVariable Long id){
-        PessoaResponseDTO tecnicoDTO = tecnicoServices.buscarTecnicoID(id);
+    @PatchMapping ("/ativar/{id}")
+    @Transactional
+    public ResponseEntity<PessoaResponseDTO> ativarTecnico(@PathVariable Long id){
+        Tecnico tecnico = tecnicoServices.ativarTecnico(id);
+        return ResponseEntity.ok(new PessoaResponseDTO(tecnico));
+    }
 
-        if (tecnicoDTO != null){
-            return ResponseEntity.ok(tecnicoDTO);
-        } else {
-            return ResponseEntity.noContent().build();
-        }
+    @GetMapping("/{id}")
+    public ResponseEntity<PessoaResponseDTO> buscarTecnicoID(@PathVariable Long id){
+        Tecnico tecnico = tecnicoServices.buscarTecnicoID(id);
+
+        return ResponseEntity.ok(new PessoaResponseDTO(tecnico));
     }
 
     @GetMapping("/cpf/{cpf}")
     public ResponseEntity<PessoaResponseDTO> buscarTecnicoCPF(@PathVariable String cpf){
-        PessoaResponseDTO tecnicoDTO = tecnicoServices.buscarTecnicoCPF(cpf);
+        Tecnico tecnico = tecnicoServices.buscarTecnicoCPF(cpf);
 
-        if (tecnicoDTO != null){
-            return ResponseEntity.ok(tecnicoDTO);
-        } else {
-            return ResponseEntity.noContent().build();
-        }
+        return ResponseEntity.ok(new PessoaResponseDTO(tecnico));
     }
 
     @GetMapping("/todos")

@@ -37,7 +37,7 @@ public abstract class Pessoa {
     public Pessoa() {}
 
     protected Pessoa(String cpf, String nome, String email, String telefone) {
-        this.cpf = cpf;
+        this.cpf = formatarCpf(cpf);
         this.nome = nome;
         this.email = email;
         this.telefone = telefone;
@@ -45,7 +45,7 @@ public abstract class Pessoa {
     }
 
     public Pessoa(PessoaCreateRequestDTO pessoaDTO) {
-        this.cpf = pessoaDTO.cpf();
+        this.cpf = formatarCpf(pessoaDTO.cpf());
         this.nome = pessoaDTO.nome();
         this.email = pessoaDTO.email();
         this.telefone = pessoaDTO.telefone();
@@ -54,7 +54,7 @@ public abstract class Pessoa {
 
     public void atualizarPessoa(PessoaUpdateRequestDTO pessoaDTO) {
         if (pessoaDTO.cpf() != null){
-            this.cpf = pessoaDTO.cpf();
+            this.cpf = formatarCpf(pessoaDTO.cpf());
         }
         if (pessoaDTO.nome() != null){
             this.nome = pessoaDTO.nome();
@@ -69,6 +69,14 @@ public abstract class Pessoa {
 
     public void deletarPessoa(){
         this.ativo = false;
+    }
+    public void ativarPessoa(){
+        this.ativo = true;
+    }
+    public static String formatarCpf(String cpf){
+        cpf = cpf.replaceAll("\\.","");
+        cpf = cpf.replaceAll("-","");
+        return cpf;
     }
 
     public Long getId() {
@@ -113,4 +121,6 @@ public abstract class Pessoa {
     public void setAtivo(Boolean ativo) {
         this.ativo = ativo;
     }
+
+
 }

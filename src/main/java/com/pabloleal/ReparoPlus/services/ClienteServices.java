@@ -3,15 +3,17 @@ package com.pabloleal.ReparoPlus.services;
 import com.pabloleal.ReparoPlus.dto.ClienteCreateRequestDTO;
 import com.pabloleal.ReparoPlus.dto.ClienteResponseDTO;
 import com.pabloleal.ReparoPlus.dto.ClienteUpdateRequestDTO;
+import com.pabloleal.ReparoPlus.exceptions.EntidadeAtivaInativaException;
+import com.pabloleal.ReparoPlus.exceptions.EntidadeCadastradaException;
 import com.pabloleal.ReparoPlus.models.Cliente;
+import com.pabloleal.ReparoPlus.models.Pessoa;
 import com.pabloleal.ReparoPlus.repositories.ClienteRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 
 @Service
 public class ClienteServices {
@@ -19,48 +21,74 @@ public class ClienteServices {
     @Autowired
     private ClienteRepository clienteRepository;
 
-    public ClienteCreateRequestDTO cadastrarCliente(ClienteCreateRequestDTO dados){
+    public Cliente cadastrarCliente(ClienteCreateRequestDTO dados) {
+
+        String cpfFormatado = Pessoa.formatarCpf(dados.cpf());
+
+        if (clienteRepository.existsByCpf(cpfFormatado)) {
+            throw new EntidadeCadastradaException("Cliente com CPF " + cpfFormatado + " já cadastrado");
+        }
 
         Cliente cliente = new Cliente(dados);
         clienteRepository.save(cliente);
-        return dados;
+        return cliente;
 
     }
 
-    public ClienteUpdateRequestDTO atualizarCliente(ClienteUpdateRequestDTO dados) {
+    public Cliente atualizarCliente(ClienteUpdateRequestDTO dados) {
+        Cliente cliente = clienteRepository.findById(dados.id()).
+                orElseThrow(() -> new EntityNotFoundException("Cliente com ID " + dados.id() + " não encontrado"));
 
-        Cliente cliente = clienteRepository.getReferenceByCpf(dados.cpf());
+
+        if (dados.cpf() != null) {
+            String cpfFormatado = Pessoa.formatarCpf(dados.cpf());
+
+            if (clienteRepository.existsByCpf(cpfFormatado)) {
+                throw new EntidadeCadastradaException("Cliente com CPF " + cpfFormatado + " já cadastrado");
+            }
+        }
+
         cliente.atualizarCliente(dados);
-        return new ClienteUpdateRequestDTO(cliente);
+        return cliente;
     }
 
     public void deletarCliente(Long id) {
 
-        Cliente cliente = clienteRepository.getReferenceById(id);
+        Cliente cliente = clienteRepository.findById(id).
+                orElseThrow(() -> new EntityNotFoundException("Cliente com ID " + id + " não encontrado"));
+
+        if (!cliente.getAtivo()) {
+            throw new EntidadeAtivaInativaException("Cliente com ID " + id + " já está inativo");
+        }
+
         cliente.deletarPessoa();
 
     }
 
-    public ClienteResponseDTO buscarClienteID(Long id) {
-        Optional<Cliente> cliente = clienteRepository.findById(id);
+    public Cliente ativarCliente(Long id) {
+        Cliente cliente = clienteRepository.findById(id).
+                orElseThrow(() -> new EntityNotFoundException("Cliente com ID " + id + " não encontrado"));
 
-        if (cliente.isPresent()){
-            Cliente c = cliente.get();
-            return new ClienteResponseDTO(c.getId(), c.getCpf(), c.getNome(),c.getTelefone(), c.getEmail(), c.getEndereco());
+        if (cliente.getAtivo()) {
+            throw new EntidadeAtivaInativaException("Cliente com ID " + id + " já está ativo");
         }
 
-        return null;
+        cliente.ativarPessoa();
+        return cliente;
     }
 
-    public ClienteResponseDTO buscarClienteCPF(String cpf) {
-        Optional<Cliente> cliente = clienteRepository.findByCpf(cpf);
+    public Cliente buscarClienteID(Long id) {
+        Cliente cliente = clienteRepository.findById(id).
+                orElseThrow(() -> new EntityNotFoundException("Cliente com ID " + id + " não encontrado"));
 
-        if (cliente.isPresent()){
-            Cliente c = cliente.get();
-            return new ClienteResponseDTO(c.getId(), c.getCpf(), c.getNome(),c.getTelefone(), c.getEmail(), c.getEndereco());
-        }
+        return cliente;
+    }
 
-        return null;
+    public Cliente buscarClienteCPF(String cpf) {
+        String cpfFormatado = Pessoa.formatarCpf(cpf);
+        Cliente cliente = clienteRepository.findByCpf(cpfFormatado).
+                orElseThrow(() -> new EntityNotFoundException("Cliente com CPF " + cpfFormatado + " não encontrado"));
+        return cliente;
     }
 
     public Page<ClienteResponseDTO> listarClientes(Pageable pageable) {

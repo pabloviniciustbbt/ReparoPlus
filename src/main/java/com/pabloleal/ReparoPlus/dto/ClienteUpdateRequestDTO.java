@@ -2,11 +2,12 @@ package com.pabloleal.ReparoPlus.dto;
 
 import com.pabloleal.ReparoPlus.models.Cliente;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record ClienteUpdateRequestDTO(
 
-        @NotBlank
+        @NotNull
+        Long id,
         String cpf,
         String nome,
         @Email
@@ -15,12 +16,13 @@ public record ClienteUpdateRequestDTO(
         EnderecoUpdateDTO endereco
 
 ) {
-        public ClienteUpdateRequestDTO(Cliente cliente){
-                this(
-                        cliente.getCpf(),
-                        cliente.getNome(),
-                        cliente.getEmail(),
-                        cliente.getTelefone(),
-                        new EnderecoUpdateDTO(cliente.getEndereco()));
-        }
+    public ClienteUpdateRequestDTO(Cliente cliente) {
+        this(
+                cliente.getId(),
+                cliente.getCpf(),
+                cliente.getNome(),
+                cliente.getEmail(),
+                cliente.getTelefone(),
+                new EnderecoUpdateDTO(cliente.getEndereco()));
+    }
 }

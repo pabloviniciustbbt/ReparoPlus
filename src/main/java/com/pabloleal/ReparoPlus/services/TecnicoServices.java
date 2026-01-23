@@ -3,14 +3,16 @@ package com.pabloleal.ReparoPlus.services;
 import com.pabloleal.ReparoPlus.dto.PessoaCreateRequestDTO;
 import com.pabloleal.ReparoPlus.dto.PessoaResponseDTO;
 import com.pabloleal.ReparoPlus.dto.PessoaUpdateRequestDTO;
+import com.pabloleal.ReparoPlus.exceptions.EntidadeAtivaInativaException;
+import com.pabloleal.ReparoPlus.exceptions.EntidadeCadastradaException;
+import com.pabloleal.ReparoPlus.models.Pessoa;
 import com.pabloleal.ReparoPlus.models.Tecnico;
 import com.pabloleal.ReparoPlus.repositories.TecnicoRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class TecnicoServices {
@@ -18,43 +20,73 @@ public class TecnicoServices {
     @Autowired
     private TecnicoRepository tecnicoRepository;
 
-    public PessoaCreateRequestDTO cadastrarTecnico(PessoaCreateRequestDTO dados) {
+    public Tecnico cadastrarTecnico(PessoaCreateRequestDTO dados) {
+
+        String cpfFormatado = Pessoa.formatarCpf(dados.cpf());
+
+        if (tecnicoRepository.existsByCpf(cpfFormatado)) {
+            throw new EntidadeCadastradaException("Tecnico com CPF " + cpfFormatado + " já cadastrado");
+        }
+
         Tecnico tecnico = new Tecnico(dados);
         tecnicoRepository.save(tecnico);
-        return dados;
+        return tecnico;
     }
 
-    public PessoaUpdateRequestDTO atualizarTecnico(PessoaUpdateRequestDTO dados) {
-        Tecnico tecnico = tecnicoRepository.getReferenceById(dados.id());
+    public Tecnico atualizarTecnico(PessoaUpdateRequestDTO dados) {
+        Tecnico tecnico = tecnicoRepository.findById(dados.id()).
+                orElseThrow(() -> new EntityNotFoundException("Tecnico com ID " + dados.id() + " não encontrado"));
+
+        if (dados.cpf() != null) {
+            String cpfFormatado = Pessoa.formatarCpf(dados.cpf());
+
+            if (tecnicoRepository.existsByCpf(cpfFormatado)) {
+                throw new EntidadeCadastradaException("Tecnico com CPF " + cpfFormatado + " já cadastrado");
+            }
+        }
+
         tecnico.atualizarPessoa(dados);
-        return new PessoaUpdateRequestDTO(tecnico);
+        return tecnico;
     }
 
     public void deletarTecnico(Long id) {
-        Tecnico tecnico = tecnicoRepository.getReferenceById(id);
+        Tecnico tecnico = tecnicoRepository.findById(id).
+                orElseThrow(() -> new EntityNotFoundException("Tecnico com ID " + id + " não encontrado"));
+
+        if (!tecnico.getAtivo()) {
+            throw new EntidadeAtivaInativaException("Tecnico com ID " + id + " já está inativo");
+        }
+
         tecnico.deletarPessoa();
     }
 
-    public PessoaResponseDTO buscarTecnicoID(Long id) {
-        Optional<Tecnico> tecnico = tecnicoRepository.findById(id);
+    public Tecnico ativarTecnico(Long id) {
+        Tecnico tecnico = tecnicoRepository.findById(id).
+                orElseThrow(() -> new EntityNotFoundException("Tecnico com ID " + id + " não encontrado"));
 
-        if (tecnico.isPresent()){
-            Tecnico t = tecnico.get();
-            return new PessoaResponseDTO(t.getId(), t.getCpf(), t.getNome(), t.getEmail(), t.getTelefone());
+        if (tecnico.getAtivo()) {
+            throw new EntidadeAtivaInativaException("Tecnico com ID " + id + " já está ativo");
         }
 
-        return null;
+        tecnico.ativarPessoa();
+        return tecnico;
     }
 
-    public PessoaResponseDTO buscarTecnicoCPF(String cpf){
-        Optional<Tecnico> tecnico = tecnicoRepository.findByCpf(cpf);
+    public Tecnico buscarTecnicoID(Long id) {
+        Tecnico tecnico = tecnicoRepository.findById(id).
+                orElseThrow(() -> new EntityNotFoundException("Tecnico com ID " + id + " não encontrado"));
 
-        if (tecnico.isPresent()){
-            Tecnico t = tecnico.get();
-            return new PessoaResponseDTO(t.getId(), t.getCpf(), t.getNome(), t.getEmail(), t.getTelefone());
-        }
+        return tecnico;
+    }
 
-        return null;
+    public Tecnico buscarTecnicoCPF(String cpf) {
+
+        String cpfFormatado = Pessoa.formatarCpf(cpf);
+
+        Tecnico tecnico = tecnicoRepository.findByCpf(cpfFormatado).
+                orElseThrow(() -> new EntityNotFoundException("Tecnico com ID " + cpfFormatado + " não encontrado"));
+
+        return tecnico;
     }
 
     public Page<PessoaResponseDTO> listarTecnicos(Pageable pageable) {

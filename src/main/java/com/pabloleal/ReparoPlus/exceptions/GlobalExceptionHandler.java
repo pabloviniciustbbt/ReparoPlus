@@ -14,8 +14,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }
 
-    @ExceptionHandler(EntidadeInativaException.class)
-    public ResponseEntity tratarEntidadeInativa(EntidadeInativaException exception){
+    @ExceptionHandler(EntidadeAtivaInativaException.class)
+    public ResponseEntity tratarEntidadeAtivaInativa(EntidadeAtivaInativaException exception){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 

@@ -3,6 +3,7 @@ package com.pabloleal.ReparoPlus.controller;
 import com.pabloleal.ReparoPlus.dto.ClienteCreateRequestDTO;
 import com.pabloleal.ReparoPlus.dto.ClienteResponseDTO;
 import com.pabloleal.ReparoPlus.dto.ClienteUpdateRequestDTO;
+import com.pabloleal.ReparoPlus.models.Cliente;
 import com.pabloleal.ReparoPlus.services.ClienteServices;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -11,6 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
+import java.net.URI;
 
 @RestController
 @RequestMapping("/cliente")
@@ -21,61 +24,61 @@ public class ClienteController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<ClienteCreateRequestDTO> cadastrarCliente(@RequestBody @Valid ClienteCreateRequestDTO dados){
-        clienteServices.cadastrarCliente(dados);
-        return ResponseEntity.ok(dados);
+    public ResponseEntity<ClienteResponseDTO> cadastrarCliente(@RequestBody @Valid ClienteCreateRequestDTO dados, UriComponentsBuilder uriComponentsBuilder) {
+        Cliente cliente = clienteServices.cadastrarCliente(dados);
+
+        URI uri = uriComponentsBuilder.path("/cliente/{id}").buildAndExpand(cliente.getId()).toUri();
+
+        return ResponseEntity.created(uri).body(new ClienteResponseDTO(cliente));
     }
 
     @PutMapping
     @Transactional
-    public ResponseEntity<ClienteUpdateRequestDTO> atualizarCliente(@RequestBody @Valid ClienteUpdateRequestDTO dados){
-        clienteServices.atualizarCliente(dados);
-        return ResponseEntity.ok(dados);
+    public ResponseEntity<ClienteResponseDTO> atualizarCliente(@RequestBody @Valid ClienteUpdateRequestDTO dados) {
+        Cliente cliente = clienteServices.atualizarCliente(dados);
+        return ResponseEntity.ok(new ClienteResponseDTO(cliente));
     }
 
-    @Transactional
     @DeleteMapping("/{id}")
-    public ResponseEntity deletarCliente(@PathVariable Long id){
+    @Transactional
+    public ResponseEntity deletarCliente(@PathVariable Long id) {
         clienteServices.deletarCliente(id);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/id/{id}")
-    public ResponseEntity<ClienteResponseDTO> buscarClienteID(@PathVariable Long id){
-        ClienteResponseDTO clienteDTO = clienteServices.buscarClienteID(id);
+    @PatchMapping("/ativar/{id}")
+    @Transactional
+    public ResponseEntity<ClienteResponseDTO> ativarCliente(@PathVariable Long id) {
+        Cliente cliente = clienteServices.ativarCliente(id);
+        return ResponseEntity.ok(new ClienteResponseDTO(cliente));
+    }
 
-        if (clienteDTO != null){
-            return ResponseEntity.ok(clienteDTO);
-        } else {
-            return ResponseEntity.noContent().build();
-        }
+    @GetMapping("/{id}")
+    public ResponseEntity<ClienteResponseDTO> buscarClienteID(@PathVariable Long id) {
+        Cliente cliente = clienteServices.buscarClienteID(id);
+        return ResponseEntity.ok(new ClienteResponseDTO(cliente));
     }
 
     @GetMapping("/cpf/{cpf}")
-    public ResponseEntity<ClienteResponseDTO> buscarClienteCPF(@PathVariable String cpf){
-        ClienteResponseDTO clienteDTO = clienteServices.buscarClienteCPF(cpf);
-
-        if (clienteDTO != null){
-            return ResponseEntity.ok(clienteDTO);
-        } else {
-            return ResponseEntity.noContent().build();
-        }
+    public ResponseEntity<ClienteResponseDTO> buscarClienteCPF(@PathVariable String cpf) {
+        Cliente cliente = clienteServices.buscarClienteCPF(cpf);
+        return ResponseEntity.ok(new ClienteResponseDTO(cliente));
     }
 
     @GetMapping("/todos")
-    public ResponseEntity<Page<ClienteResponseDTO>> listarClientes(Pageable pageable){
+    public ResponseEntity<Page<ClienteResponseDTO>> listarClientes(Pageable pageable) {
         Page<ClienteResponseDTO> page = clienteServices.listarClientes(pageable);
         return ResponseEntity.ok(page);
     }
 
     @GetMapping("/ativos")
-    public ResponseEntity<Page<ClienteResponseDTO>> listarClientesAtivos(Pageable pageable){
+    public ResponseEntity<Page<ClienteResponseDTO>> listarClientesAtivos(Pageable pageable) {
         Page<ClienteResponseDTO> page = clienteServices.listarClientesAtivos(pageable);
         return ResponseEntity.ok(page);
     }
 
     @GetMapping("/inativos")
-    public ResponseEntity<Page<ClienteResponseDTO>> listarClientesInativos(Pageable pageable){
+    public ResponseEntity<Page<ClienteResponseDTO>> listarClientesInativos(Pageable pageable) {
         Page<ClienteResponseDTO> page = clienteServices.listarClientesInativos(pageable);
         return ResponseEntity.ok(page);
     }

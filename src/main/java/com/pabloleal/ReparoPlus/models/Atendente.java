@@ -1,6 +1,6 @@
     package com.pabloleal.ReparoPlus.models;
 
-    import com.pabloleal.ReparoPlus.dto.PessoaCreateRequestDTO;
+    import com.pabloleal.ReparoPlus.dto.pessoa.PessoaCreateRequestDTO;
     import jakarta.persistence.*;
     import java.util.HashSet;
     import java.util.Set;

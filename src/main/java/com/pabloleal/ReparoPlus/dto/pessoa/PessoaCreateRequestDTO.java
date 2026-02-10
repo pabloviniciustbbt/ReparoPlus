@@ -1,4 +1,4 @@
-package com.pabloleal.ReparoPlus.dto;
+package com.pabloleal.ReparoPlus.dto.pessoa;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

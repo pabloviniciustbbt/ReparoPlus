@@ -1,7 +1,7 @@
 package com.pabloleal.ReparoPlus.models;
 
-import com.pabloleal.ReparoPlus.dto.ClienteCreateRequestDTO;
-import com.pabloleal.ReparoPlus.dto.ClienteUpdateRequestDTO;
+import com.pabloleal.ReparoPlus.dto.cliente.ClienteCreateRequestDTO;
+import com.pabloleal.ReparoPlus.dto.cliente.ClienteUpdateRequestDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 

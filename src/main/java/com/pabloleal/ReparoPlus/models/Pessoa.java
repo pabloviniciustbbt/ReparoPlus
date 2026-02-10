@@ -1,7 +1,7 @@
 package com.pabloleal.ReparoPlus.models;
 
-import com.pabloleal.ReparoPlus.dto.PessoaCreateRequestDTO;
-import com.pabloleal.ReparoPlus.dto.PessoaUpdateRequestDTO;
+import com.pabloleal.ReparoPlus.dto.pessoa.PessoaCreateRequestDTO;
+import com.pabloleal.ReparoPlus.dto.pessoa.PessoaUpdateRequestDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

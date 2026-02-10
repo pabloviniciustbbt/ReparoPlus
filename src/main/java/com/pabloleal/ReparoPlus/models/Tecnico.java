@@ -1,14 +1,7 @@
 package com.pabloleal.ReparoPlus.models;
 
-import com.pabloleal.ReparoPlus.dto.PessoaCreateRequestDTO;
+import com.pabloleal.ReparoPlus.dto.pessoa.PessoaCreateRequestDTO;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.validator.constraints.br.CPF;
 
 import java.util.HashSet;
 import java.util.Set;

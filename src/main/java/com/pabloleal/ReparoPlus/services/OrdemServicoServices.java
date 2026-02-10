@@ -1,9 +1,9 @@
 package com.pabloleal.ReparoPlus.services;
 
-import com.pabloleal.ReparoPlus.dto.DadosListagemOrdemServicoDTO;
-import com.pabloleal.ReparoPlus.dto.HistoricoStatusOSResponseDTO;
-import com.pabloleal.ReparoPlus.dto.OrdemServicoRequestDTO;
-import com.pabloleal.ReparoPlus.dto.OrdemServicoUpdateRequestDTO;
+import com.pabloleal.ReparoPlus.dto.ordemServico.DadosListagemOrdemServicoDTO;
+import com.pabloleal.ReparoPlus.dto.ordemServico.HistoricoStatusOSResponseDTO;
+import com.pabloleal.ReparoPlus.dto.ordemServico.OrdemServicoRequestDTO;
+import com.pabloleal.ReparoPlus.dto.ordemServico.OrdemServicoUpdateRequestDTO;
 import com.pabloleal.ReparoPlus.exceptions.EntidadeAtivaInativaException;
 import com.pabloleal.ReparoPlus.exceptions.EntidadeCadastradaException;
 import com.pabloleal.ReparoPlus.models.*;

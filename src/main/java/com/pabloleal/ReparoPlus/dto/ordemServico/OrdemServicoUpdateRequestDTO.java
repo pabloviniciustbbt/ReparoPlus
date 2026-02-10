@@ -1,4 +1,4 @@
-package com.pabloleal.ReparoPlus.dto;
+package com.pabloleal.ReparoPlus.dto.ordemServico;
 
 import com.pabloleal.ReparoPlus.models.Equipamento;
 import com.pabloleal.ReparoPlus.models.StatusOS;

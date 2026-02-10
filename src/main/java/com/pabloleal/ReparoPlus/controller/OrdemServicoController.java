@@ -1,6 +1,6 @@
 package com.pabloleal.ReparoPlus.controller;
 
-import com.pabloleal.ReparoPlus.dto.*;
+import com.pabloleal.ReparoPlus.dto.ordemServico.*;
 import com.pabloleal.ReparoPlus.models.OrdemServico;
 import com.pabloleal.ReparoPlus.services.OrdemServicoServices;
 import com.pabloleal.ReparoPlus.utils.AvisoContext;

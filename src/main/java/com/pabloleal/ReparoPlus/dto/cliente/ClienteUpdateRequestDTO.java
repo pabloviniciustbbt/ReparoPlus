@@ -1,5 +1,6 @@
-package com.pabloleal.ReparoPlus.dto;
+package com.pabloleal.ReparoPlus.dto.cliente;
 
+import com.pabloleal.ReparoPlus.dto.endereco.EnderecoUpdateDTO;
 import com.pabloleal.ReparoPlus.models.Cliente;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;

@@ -1,4 +1,4 @@
-package com.pabloleal.ReparoPlus.dto;
+package com.pabloleal.ReparoPlus.dto.pessoa;
 
 import com.pabloleal.ReparoPlus.models.Pessoa;
 import jakarta.validation.constraints.Email;

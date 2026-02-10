@@ -1,8 +1,8 @@
 package com.pabloleal.ReparoPlus.services;
 
-import com.pabloleal.ReparoPlus.dto.ClienteCreateRequestDTO;
-import com.pabloleal.ReparoPlus.dto.ClienteResponseDTO;
-import com.pabloleal.ReparoPlus.dto.ClienteUpdateRequestDTO;
+import com.pabloleal.ReparoPlus.dto.cliente.ClienteCreateRequestDTO;
+import com.pabloleal.ReparoPlus.dto.cliente.ClienteResponseDTO;
+import com.pabloleal.ReparoPlus.dto.cliente.ClienteUpdateRequestDTO;
 import com.pabloleal.ReparoPlus.exceptions.EntidadeAtivaInativaException;
 import com.pabloleal.ReparoPlus.exceptions.EntidadeCadastradaException;
 import com.pabloleal.ReparoPlus.models.Cliente;

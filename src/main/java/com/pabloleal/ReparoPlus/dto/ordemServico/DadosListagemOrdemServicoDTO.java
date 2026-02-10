@@ -1,5 +1,7 @@
-package com.pabloleal.ReparoPlus.dto;
+package com.pabloleal.ReparoPlus.dto.ordemServico;
 
+import com.pabloleal.ReparoPlus.dto.cliente.ClienteResponseDTO;
+import com.pabloleal.ReparoPlus.dto.pessoa.PessoaResumoResponseDTO;
 import com.pabloleal.ReparoPlus.models.Equipamento;
 import com.pabloleal.ReparoPlus.models.OrdemServico;
 import com.pabloleal.ReparoPlus.models.StatusOS;

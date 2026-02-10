@@ -1,4 +1,4 @@
-package com.pabloleal.ReparoPlus.dto;
+package com.pabloleal.ReparoPlus.dto.cliente;
 
 import com.pabloleal.ReparoPlus.models.Cliente;
 import com.pabloleal.ReparoPlus.models.Endereco;

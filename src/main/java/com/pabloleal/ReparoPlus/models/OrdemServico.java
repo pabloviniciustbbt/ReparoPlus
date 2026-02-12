@@ -32,8 +32,6 @@ public class OrdemServico {
 
     @Enumerated(EnumType.STRING)
     private StatusOS statusOS;
-    @OneToMany(mappedBy = "ordemServico", fetch = FetchType.LAZY)
-    private Set<Produto> produtos = new HashSet<>();
 
     @OneToMany(mappedBy = "ordemServico", fetch = FetchType.LAZY)
     private Set<HistoricoStatusOS> historicoStatusOS = new HashSet<>();

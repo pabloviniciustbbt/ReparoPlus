@@ -3,6 +3,8 @@ package com.pabloleal.ReparoPlus.models;
 import com.pabloleal.ReparoPlus.dto.produto.ProdutoCreateRequestDTO;
 import com.pabloleal.ReparoPlus.dto.produto.ProdutoUpdateRequestDTO;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Entity
@@ -12,29 +14,34 @@ public class Produto {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank
     private String nome;
+    @NotBlank
     private String descricao;
+    @NotBlank
     private String codigoEan;
+    @NotBlank
     private String fabricante;
+    @NotNull
+    private Integer quantidadeEstoque;
+    @NotNull
     private BigDecimal precoCusto;
+    @NotNull
     private BigDecimal precoVenda;
-    @ManyToOne
-    @JoinColumn(name = "ordemServico_id")
-    private OrdemServico ordemServico;
     private boolean ativo = true;
 
     public Produto() {
     }
 
-    public Produto(Long id, String nome, String descricao, String codigoEan, String fabricante, BigDecimal precoCusto, BigDecimal precoVenda, OrdemServico ordemServico, boolean ativo) {
+    public Produto(Long id, String nome, String descricao, String codigoEan, String fabricante, Integer quantidadeEstoque, BigDecimal precoCusto, BigDecimal precoVenda, OrdemServico ordemServico, boolean ativo) {
         this.id = id;
         this.nome = nome;
         this.descricao = descricao;
         this.codigoEan = codigoEan;
         this.fabricante = fabricante;
+        this.quantidadeEstoque = quantidadeEstoque;
         this.precoCusto = precoCusto;
         this.precoVenda = precoVenda;
-        this.ordemServico = ordemServico;
         this.ativo = ativo;
     }
 
@@ -43,6 +50,8 @@ public class Produto {
         this.descricao = produtoCreateRequestDTO.descricao();
         this.codigoEan = produtoCreateRequestDTO.codigoEan();
         this.fabricante = produtoCreateRequestDTO.fabricante();
+        this.quantidadeEstoque = produtoCreateRequestDTO.quantidadeEstoque();
+        this.quantidadeEstoque = produtoCreateRequestDTO.quantidadeEstoque();
         this.precoCusto = produtoCreateRequestDTO.precoCusto();
         this.precoVenda = produtoCreateRequestDTO.precoVenda();
     }
@@ -59,6 +68,9 @@ public class Produto {
         }
         if (produtoUpdateRequestDTO.fabricante() != null){
             this.fabricante = produtoUpdateRequestDTO.fabricante();
+        }
+        if (produtoUpdateRequestDTO.quantidadeEstoque() != null){
+            this.quantidadeEstoque = produtoUpdateRequestDTO.quantidadeEstoque();
         }
         if (produtoUpdateRequestDTO.precoCusto() != null){
             this.precoCusto = produtoUpdateRequestDTO.precoCusto();
@@ -116,6 +128,14 @@ public class Produto {
         this.fabricante = fabricante;
     }
 
+    public Integer getQuantidadeEstoque() {
+        return quantidadeEstoque;
+    }
+
+    public void setQuantidadeEstoque(Integer quantidadeEstoque) {
+        this.quantidadeEstoque = quantidadeEstoque;
+    }
+
     public BigDecimal getPrecoCusto() {
         return precoCusto;
     }
@@ -130,14 +150,6 @@ public class Produto {
 
     public void setPrecoVenda(BigDecimal precoVenda) {
         this.precoVenda = precoVenda;
-    }
-
-    public OrdemServico getOrdemServico() {
-        return ordemServico;
-    }
-
-    public void setOrdemServico(OrdemServico ordemServico) {
-        this.ordemServico = ordemServico;
     }
 
     public boolean isAtivo() {

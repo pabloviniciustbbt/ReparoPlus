@@ -9,6 +9,7 @@ public record ProdutoResponseDTO(
         String descricao,
         String codigoEan,
         String fabricante,
+        Integer quantidadeEstoque,
         BigDecimal precoCusto,
         BigDecimal precoVenda
 ) {
@@ -19,6 +20,7 @@ public record ProdutoResponseDTO(
                 produto.getDescricao(),
                 produto.getCodigoEan(),
                 produto.getFabricante(),
+                produto.getQuantidadeEstoque(),
                 produto.getPrecoCusto(),
                 produto.getPrecoVenda()
         );

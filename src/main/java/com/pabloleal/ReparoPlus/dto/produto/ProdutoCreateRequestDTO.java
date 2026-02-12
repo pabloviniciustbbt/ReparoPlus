@@ -15,6 +15,8 @@ public record ProdutoCreateRequestDTO(
         @NotBlank
         String fabricante,
         @NotNull
+        Integer quantidadeEstoque,
+        @NotNull
         BigDecimal precoCusto,
         @NotNull
         BigDecimal precoVenda

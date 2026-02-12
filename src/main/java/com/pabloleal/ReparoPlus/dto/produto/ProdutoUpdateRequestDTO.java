@@ -10,6 +10,7 @@ public record ProdutoUpdateRequestDTO(
         String descricao,
         String codigoEan,
         String fabricante,
+        Integer quantidadeEstoque,
         BigDecimal precoCusto,
         BigDecimal precoVenda
 ) {

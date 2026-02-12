@@ -2,7 +2,6 @@ package com.pabloleal.ReparoPlus.controller;
 
 import com.pabloleal.ReparoPlus.dto.produto.ProdutoCreateRequestDTO;
 import com.pabloleal.ReparoPlus.dto.produto.ProdutoResponseDTO;
-import com.pabloleal.ReparoPlus.dto.produto.ProdutoResumoResponseDTO;
 import com.pabloleal.ReparoPlus.dto.produto.ProdutoUpdateRequestDTO;
 import com.pabloleal.ReparoPlus.models.Produto;
 import com.pabloleal.ReparoPlus.services.ProdutoServices;
@@ -49,8 +48,8 @@ public class ProdutoController {
 
     @PatchMapping("/ativar/{id}")
     @Transactional
-    public ResponseEntity<ProdutoResumoResponseDTO> ativarProduto(@PathVariable Long id) {
+    public ResponseEntity<ProdutoResponseDTO> ativarProduto(@PathVariable Long id) {
         Produto produto = produtoServices.ativarProduto(id);
-        return ResponseEntity.ok(new ProdutoResumoResponseDTO(produto));
+        return ResponseEntity.ok(new ProdutoResponseDTO(produto));
     }
 }

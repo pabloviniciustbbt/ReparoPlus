@@ -8,11 +8,11 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Entity
-@Table (name = "produtos")
+@Table(name = "produtos")
 public class Produto {
 
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank
     private String nome;
@@ -51,31 +51,30 @@ public class Produto {
         this.codigoEan = produtoCreateRequestDTO.codigoEan();
         this.fabricante = produtoCreateRequestDTO.fabricante();
         this.quantidadeEstoque = produtoCreateRequestDTO.quantidadeEstoque();
-        this.quantidadeEstoque = produtoCreateRequestDTO.quantidadeEstoque();
         this.precoCusto = produtoCreateRequestDTO.precoCusto();
         this.precoVenda = produtoCreateRequestDTO.precoVenda();
     }
 
     public void atualizaProduto(ProdutoUpdateRequestDTO produtoUpdateRequestDTO) {
-        if (produtoUpdateRequestDTO.nome() != null){
+        if (produtoUpdateRequestDTO.nome() != null) {
             this.nome = produtoUpdateRequestDTO.nome();
         }
-        if (produtoUpdateRequestDTO.descricao() != null){
+        if (produtoUpdateRequestDTO.descricao() != null) {
             this.descricao = produtoUpdateRequestDTO.descricao();
         }
-        if (produtoUpdateRequestDTO.codigoEan() != null){
+        if (produtoUpdateRequestDTO.codigoEan() != null) {
             this.codigoEan = produtoUpdateRequestDTO.codigoEan();
         }
-        if (produtoUpdateRequestDTO.fabricante() != null){
+        if (produtoUpdateRequestDTO.fabricante() != null) {
             this.fabricante = produtoUpdateRequestDTO.fabricante();
         }
-        if (produtoUpdateRequestDTO.quantidadeEstoque() != null){
+        if (produtoUpdateRequestDTO.quantidadeEstoque() != null) {
             this.quantidadeEstoque = produtoUpdateRequestDTO.quantidadeEstoque();
         }
-        if (produtoUpdateRequestDTO.precoCusto() != null){
+        if (produtoUpdateRequestDTO.precoCusto() != null) {
             this.precoCusto = produtoUpdateRequestDTO.precoCusto();
         }
-        if (produtoUpdateRequestDTO.precoVenda() != null){
+        if (produtoUpdateRequestDTO.precoVenda() != null) {
             this.precoVenda = produtoUpdateRequestDTO.precoVenda();
         }
     }

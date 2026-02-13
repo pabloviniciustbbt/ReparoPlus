@@ -55,6 +55,12 @@ public class ProdutoController {
         return ResponseEntity.ok(new ProdutoResponseDTO(produto));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ProdutoResponseDTO> buscarProdutoId(@PathVariable Long id){
+        Produto produto = produtoServices.buscarProdutoId(id);
+        return ResponseEntity.ok(new ProdutoResponseDTO(produto));
+    }
+
     @GetMapping("/todos")
     public ResponseEntity<Page<ProdutoResponseDTO>> listarProdutos(Pageable pageable){
         Page<ProdutoResponseDTO> page = produtoServices.listarProdutos(pageable);

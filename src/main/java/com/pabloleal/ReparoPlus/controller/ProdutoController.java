@@ -8,6 +8,8 @@ import com.pabloleal.ReparoPlus.services.ProdutoServices;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -51,5 +53,24 @@ public class ProdutoController {
     public ResponseEntity<ProdutoResponseDTO> ativarProduto(@PathVariable Long id) {
         Produto produto = produtoServices.ativarProduto(id);
         return ResponseEntity.ok(new ProdutoResponseDTO(produto));
+    }
+
+    @GetMapping("/todos")
+    public ResponseEntity<Page<ProdutoResponseDTO>> listarProdutos(Pageable pageable){
+        Page<ProdutoResponseDTO> page = produtoServices.listarProdutos(pageable);
+        return ResponseEntity.ok(page);
+    }
+
+    @GetMapping("/ativos")
+    public ResponseEntity<Page<ProdutoResponseDTO>> listarProdutosAtivos(Pageable pageable){
+        Page<ProdutoResponseDTO> page = produtoServices.listarProdutosAtivos(pageable);
+        return ResponseEntity.ok(page);
+    }
+
+    @GetMapping("/inativos")
+    public ResponseEntity<Page<ProdutoResponseDTO>> listarProdutosInativos(Pageable pageable){
+        Page<ProdutoResponseDTO> page = produtoServices.listarProdutosInativos(pageable);
+
+        return ResponseEntity.ok(page);
     }
 }

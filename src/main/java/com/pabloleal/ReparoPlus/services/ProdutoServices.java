@@ -1,6 +1,7 @@
 package com.pabloleal.ReparoPlus.services;
 
 import com.pabloleal.ReparoPlus.dto.produto.ProdutoCreateRequestDTO;
+import com.pabloleal.ReparoPlus.dto.produto.ProdutoResponseDTO;
 import com.pabloleal.ReparoPlus.dto.produto.ProdutoUpdateRequestDTO;
 import com.pabloleal.ReparoPlus.exceptions.EntidadeAtivaInativaException;
 import com.pabloleal.ReparoPlus.exceptions.EntidadeCadastradaException;
@@ -8,6 +9,8 @@ import com.pabloleal.ReparoPlus.models.Produto;
 import com.pabloleal.ReparoPlus.repositories.ProdutoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,7 +21,7 @@ public class ProdutoServices {
 
     public Produto cadastrarProduto(ProdutoCreateRequestDTO produtoCreateRequestDTO) {
 
-        if (produtoRepository.existsByCodigoEan(produtoCreateRequestDTO.codigoEan())){
+        if (produtoRepository.existsByCodigoEan(produtoCreateRequestDTO.codigoEan())) {
             Produto produtoCadastrado = produtoRepository.findByCodigoEan(produtoCreateRequestDTO.codigoEan());
             throw new EntidadeCadastradaException("Produto com Código EAN" + produtoCreateRequestDTO.codigoEan() +
                     " já cadastrado com ID " + produtoCadastrado.getId());
@@ -34,7 +37,7 @@ public class ProdutoServices {
         Produto produto = produtoRepository.findById(produtoUpdateRequestDTO.id()).
                 orElseThrow(() -> new EntityNotFoundException("Produto com ID " + produtoUpdateRequestDTO.id() + " não encontrado"));
 
-        if (produtoRepository.existsByCodigoEan(produtoUpdateRequestDTO.codigoEan())){
+        if (produtoRepository.existsByCodigoEan(produtoUpdateRequestDTO.codigoEan())) {
             Produto produtoCadastrado = produtoRepository.findByCodigoEan(produtoUpdateRequestDTO.codigoEan());
             throw new EntidadeCadastradaException("Produto com EAN " + produtoUpdateRequestDTO.codigoEan() + " já cadastrado com ID " + produtoCadastrado.getId());
         }
@@ -48,7 +51,7 @@ public class ProdutoServices {
         Produto produto = produtoRepository.findById(id).
                 orElseThrow(() -> new EntityNotFoundException("Produto com ID " + id + " não encontrado"));
 
-        if (!produto.isAtivo()){
+        if (!produto.isAtivo()) {
             throw new EntidadeAtivaInativaException("Produto com ID " + id + " já está inativo");
         }
 
@@ -59,11 +62,26 @@ public class ProdutoServices {
         Produto produto = produtoRepository.findById(id).
                 orElseThrow(() -> new EntityNotFoundException("Produto com ID " + id + " não cadastrado"));
 
-        if (produto.isAtivo()){
+        if (produto.isAtivo()) {
             throw new EntidadeAtivaInativaException("Produto com ID " + id + " já está ativo");
         }
 
         produto.ativarProduto();
         return produto;
+    }
+
+    public Page<ProdutoResponseDTO> listarProdutos(Pageable pageable) {
+        return produtoRepository.findAll(pageable).
+                map(ProdutoResponseDTO::new);
+    }
+
+    public Page<ProdutoResponseDTO> listarProdutosAtivos(Pageable pageable) {
+        return produtoRepository.findAllByAtivoTrue(pageable)
+                .map(ProdutoResponseDTO::new);
+    }
+
+    public Page<ProdutoResponseDTO> listarProdutosInativos(Pageable pageable) {
+        return produtoRepository.findAllByAtivoFalse(pageable)
+                .map(ProdutoResponseDTO::new);
     }
 }

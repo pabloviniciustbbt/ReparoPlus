@@ -70,6 +70,13 @@ public class ProdutoServices {
         return produto;
     }
 
+    public Produto buscarProdutoId(Long id) {
+        Produto produto = produtoRepository.findById(id).
+                orElseThrow(() -> new EntityNotFoundException("Produto com ID " + id + " não econtrado"));
+
+        return produto;
+    }
+
     public Page<ProdutoResponseDTO> listarProdutos(Pageable pageable) {
         return produtoRepository.findAll(pageable).
                 map(ProdutoResponseDTO::new);
@@ -84,4 +91,5 @@ public class ProdutoServices {
         return produtoRepository.findAllByAtivoFalse(pageable)
                 .map(ProdutoResponseDTO::new);
     }
+
 }

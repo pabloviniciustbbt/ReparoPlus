@@ -25,7 +25,8 @@ public class AtendenteServices {
         String cpfFormatado = Pessoa.formatarCpf(dados.cpf());
 
         if (atendenteRepository.existsByCpf(cpfFormatado)){
-            throw new EntidadeCadastradaException("Atendente com CPF " + cpfFormatado + " já cadastrado");
+            Atendente atendenteCadastrado = atendenteRepository.getReferenceByCpf(cpfFormatado);
+            throw new EntidadeCadastradaException("Atendente com CPF " + cpfFormatado + " já cadastrado com ID " + atendenteCadastrado.getId());
         }
 
         Atendente atendente = new Atendente(dados);
@@ -41,7 +42,8 @@ public class AtendenteServices {
             String cpfFormatado = Pessoa.formatarCpf(dados.cpf());
 
             if (atendenteRepository.existsByCpf(cpfFormatado)){
-                throw new EntidadeCadastradaException("Atendente com CPF " + cpfFormatado + " já cadastrado");
+                Atendente atendenteCadastrado = atendenteRepository.getReferenceByCpf(cpfFormatado);
+                throw new EntidadeCadastradaException("Atendente com CPF " + cpfFormatado + " já cadastrado com ID " + atendenteCadastrado.getId());
             }
         }
 

@@ -26,7 +26,8 @@ public class ClienteServices {
         String cpfFormatado = Pessoa.formatarCpf(dados.cpf());
 
         if (clienteRepository.existsByCpf(cpfFormatado)) {
-            throw new EntidadeCadastradaException("Cliente com CPF " + cpfFormatado + " já cadastrado");
+            Cliente clienteCadastrado = clienteRepository.getReferenceByCpf(cpfFormatado);
+            throw new EntidadeCadastradaException("Cliente com CPF " + cpfFormatado + " já cadastrado com ID " + clienteCadastrado.getId());
         }
 
         Cliente cliente = new Cliente(dados);
@@ -44,7 +45,8 @@ public class ClienteServices {
             String cpfFormatado = Pessoa.formatarCpf(dados.cpf());
 
             if (clienteRepository.existsByCpf(cpfFormatado)) {
-                throw new EntidadeCadastradaException("Cliente com CPF " + cpfFormatado + " já cadastrado");
+                Cliente clienteCadastrado = clienteRepository.getReferenceByCpf(cpfFormatado);
+                throw new EntidadeCadastradaException("Cliente com CPF " + cpfFormatado + " já cadastrado com ID " + clienteCadastrado.getId());
             }
         }
 

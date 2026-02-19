@@ -25,7 +25,8 @@ public class TecnicoServices {
         String cpfFormatado = Pessoa.formatarCpf(dados.cpf());
 
         if (tecnicoRepository.existsByCpf(cpfFormatado)) {
-            throw new EntidadeCadastradaException("Tecnico com CPF " + cpfFormatado + " já cadastrado");
+            Tecnico tecnicoCadastrado = tecnicoRepository.getReferenceByCpf(cpfFormatado);
+            throw new EntidadeCadastradaException("Tecnico com CPF " + cpfFormatado + " já cadastrado com ID " + tecnicoCadastrado.getId());
         }
 
         Tecnico tecnico = new Tecnico(dados);
@@ -41,7 +42,8 @@ public class TecnicoServices {
             String cpfFormatado = Pessoa.formatarCpf(dados.cpf());
 
             if (tecnicoRepository.existsByCpf(cpfFormatado)) {
-                throw new EntidadeCadastradaException("Tecnico com CPF " + cpfFormatado + " já cadastrado");
+                Tecnico tecnicoCadastrado = tecnicoRepository.getReferenceByCpf(cpfFormatado);
+                throw new EntidadeCadastradaException("Tecnico com CPF " + cpfFormatado + " já cadastrado com ID " + tecnicoCadastrado.getId());
             }
         }
 

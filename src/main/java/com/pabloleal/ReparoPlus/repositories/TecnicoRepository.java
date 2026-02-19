@@ -14,4 +14,6 @@ public interface TecnicoRepository extends JpaRepository<Tecnico, Long> {
     Page<Tecnico> findAllByAtivoFalse(Pageable pageable);
 
     boolean existsByCpf(String cpfFormatado);
+
+    Tecnico getReferenceByCpf(String cpfFormatado);
 }

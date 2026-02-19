@@ -15,4 +15,6 @@ public interface AtendenteRepository extends JpaRepository<Atendente, Long> {
     Page<Atendente> findAllByAtivoFalse(Pageable pageable);
 
     boolean existsByCpf(String cpf);
+
+    Atendente getReferenceByCpf(String cpfFormatado);
 }

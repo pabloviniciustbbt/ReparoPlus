@@ -16,4 +16,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
     Page<Cliente> findAllByAtivoFalse(Pageable pageable);
 
     boolean existsByCpf(String cpfFormatado);
+
+    Cliente getReferenceByCpf(String cpfFormatado);
 }
